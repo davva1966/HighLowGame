@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags"
+	xmlns:springform="http://www.springframework.org/tags/form" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<spring:message code="menu_category_myplayerinfo_label" var="label" htmlEscape="false" />
+	<form:update label="${label}" id="fu_com_ss_speedsolutions_model_player" modelAttribute="player" path="/players/myinfo" versionField="Version">
+		<springform:hidden path="password" />
+		<springform:hidden path="playername" />
+		<springform:hidden path="disabled" />
+		<springform:hidden path="lastLogon" />
+		<springform:hidden path="playerRoles" />
+		<field:display field="playername" id="c_com_ss_speedsolutions_model_player_playername" object="${player}" />
+		<field:input field="name" id="c_com_ss_speedsolutions_model_player_name" required="true"  />
+		<field:input field="email" id="c_com_ss_speedsolutions_model_player_email" max="60" required="true" validationMessageCode="field_invalid_email" />
+	</form:update>
+</div>

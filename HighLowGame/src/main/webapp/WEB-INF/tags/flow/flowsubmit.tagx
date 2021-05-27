@@ -1,0 +1,43 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+	<jsp:directive.tag import="java.util.ArrayList" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<jsp:directive.attribute name="id" type="java.lang.String" required="true" description="The identifier for this tag (do not change!)" />
+	<jsp:directive.attribute name="cssClass" type="java.lang.String" required="false" description="The cssClass for the div surrounding the buttons" />
+	<jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+
+	<c:if test="${empty render or render}">
+		<c:if test="${empty cssClass}">
+			<c:set var="cssClass" value="submit" />
+		</c:if>
+		<c:set var="buttonIds" scope="request" />
+		<c:set var="buttonMessageCodes" scope="request" />
+		<c:set var="buttonValidates" scope="request" />
+
+		<jsp:doBody />
+		<c:set var="messageCodes" value="${fn:split(buttonMessageCodes, ',')}" scope="request" />
+		<c:set var="validates" value="${fn:split(buttonValidates, ',')}" scope="request" />
+		<div id="${id}" class="${cssClass}">
+			<c:forTokens items="${buttonIds}" delims="," var="buttonId" varStatus="num">
+				<c:set var="buttonMessageCode" value="${messageCodes[num.count-1]}" scope="request" />
+				<c:set var="buttonValidate" value="${validates[num.count-1]}" scope="request" />
+				<spring:message var="buttonMessage" code="${buttonMessageCode}" htmlEscape="false"/>
+				<c:choose>
+					<c:when test="${buttonValidate}">
+						<script type="text/javascript">
+							Spring.addDecoration(new Spring.ValidateAllDecoration({
+								elementId : '${buttonId}',
+								event : 'onclick'
+							}));
+						</script>
+						<input id="${buttonId}" name="_eventId_${buttonId}" type="submit" value="${fn:escapeXml(buttonMessage)}" />
+					</c:when>
+					<c:otherwise>
+						<input type="submit" id="${buttonId}" name="_eventId_${buttonId}" value="${fn:escapeXml(buttonMessage)}" />
+					</c:otherwise>
+				</c:choose>
+			</c:forTokens>
+		</div>
+	</c:if>
+</jsp:root>

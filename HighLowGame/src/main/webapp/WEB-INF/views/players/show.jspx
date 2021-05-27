@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<field:message message="${infoMessage}" />
+	<page:show id="ps_com_ss_speedsolutions_model_player" object="${player}" path="/players" >
+		<field:display field="name" id="s_com_ss_speedsolutions_model_player_name" object="${player}" />
+		<field:display field="email" id="s_com_ss_speedsolutions_model_player_email" object="${player}"  />
+		<field:image field="avatarUrl" id="s_com_ss_speedsolutions_model_player_avatar" object="${player}" render="${not empty player.avatarUrl}" />
+		<field:display booleanImage="true" field="admin" id="s_com_ss_speedsolutions_model_player_admin" object="${player}"  />
+	</page:show>
+</div>

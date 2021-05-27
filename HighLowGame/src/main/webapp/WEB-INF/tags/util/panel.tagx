@@ -1,0 +1,101 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:spring="http://www.springframework.org/tags" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
+  <jsp:output omit-xml-declaration="yes" />
+  
+  <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The identifier for this tag (do not change!)" />
+  <jsp:directive.attribute name="title" type="java.lang.String" required="true" rtexprvalue="true" description="The page title (required)" />
+  <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+  <jsp:directive.attribute name="openPane" type="java.lang.String" required="false" rtexprvalue="true" description="Control if the title pane is opened or closed by default (default: true)" />
+  <jsp:directive.attribute name="cssClass" type="java.lang.String" required="false" rtexprvalue="true" description="CSS class to use" />
+  <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
+  
+  <c:if test="${empty render or render}">
+    <c:if test="${empty openPane}">
+      <c:set value="true" var="openPane" />
+    </c:if>
+  
+    <c:set var="sec_id">
+      <spring:escapeBody javaScriptEscape="true" >${id}</spring:escapeBody>
+    </c:set>
+    
+    <c:set var="sec_openPane">
+      <spring:escapeBody javaScriptEscape="true" >${openPane}</spring:escapeBody>
+    </c:set>
+    
+    <c:set var="sec_title">
+      <spring:escapeBody javaScriptEscape="true" >${title}</spring:escapeBody>
+    </c:set>
+    
+    
+    <c:if test="${empty cssClass}">
+	 	<c:choose>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_quote')}">
+				<c:set var="cssClass" value="quoteBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_invoice')}">
+				<c:set var="cssClass" value="invoiceBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_customer')}">
+				<c:set var="cssClass" value="customerBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_item')}">
+				<c:set var="cssClass" value="itemBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_unit')}">
+				<c:set var="cssClass" value="unitBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_standardattachment')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_gstrate')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_numberserie')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_tenant')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_systemsetting')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_player')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_approle')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_apppermission')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_passwordchange')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:when test="${fn:containsIgnoreCase(sec_id, '_passwordreset')}">
+				<c:set var="cssClass" value="otherBackground"/>
+			</c:when>
+			<c:otherwise>
+				<c:set var="cssClass" value="standardBackground"/>
+			</c:otherwise>
+		</c:choose>
+	</c:if>
+    
+    
+    
+    <script type="text/javascript">dojo.require('dijit.TitlePane');</script>
+    
+    <c:if test="${not empty cssClass}">
+    	<div  class="${cssClass}">
+    		<div id="_title_${sec_id}_id">
+	   			<script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : '_title_${sec_id}_id', widgetType : 'dijit.TitlePane', widgetAttrs : {title: '${sec_title}', open: ${sec_openPane}}})); </script>
+	   		<jsp:doBody />
+	   		</div>
+    	</div>
+    </c:if>
+    <c:if test="${empty cssClass}">
+	   	<div id="_title_${sec_id}_id">
+	   		<script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : '_title_${sec_id}_id', widgetType : 'dijit.TitlePane', widgetAttrs : {title: '${sec_title}', open: ${sec_openPane}}})); </script>
+	   		<jsp:doBody />
+	   	</div>
+	</c:if>  	
+  </c:if>
+</jsp:root>

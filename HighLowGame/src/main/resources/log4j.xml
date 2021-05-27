@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.EnhancedPatternLayout">
+			<param name="conversionPattern" value="%-5p %d  [%c{1}:%L] - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="DB" class="au.com.highlowgame.util.SpeedSolutionsJDBCAppender">
+		<param name="url" value="jdbc:mysql://${database_host}/speedsolutions_backend?useUnicode=true&amp;characterEncoding=UTF-8&amp;sslMode=DISABLED&amp;serverTimezone=UTC" />
+		<param name="dbclass" value="com.mysql.cj.jdbc.Driver" />
+		<param name="username" value="${database_user}" />
+		<param name="password" value="${database_pwd}" />
+		<param name="table" value="application_log" />
+		<param name="column" value="id~EMPTY" />
+		<param name="column" value="app~STATIC~SpeedSolutions" />
+		<param name="column" value="date~TIMESTAMP" />
+		<param name="column" value="level~PRIO" />
+		<param name="column" value="location~CAT" />
+		<param name="column" value="loc~DYNAMIC~au.com.highlowgame.util.SSJDBCLogLocationColumnHandler" />
+		<param name="column" value="message~MSG" />
+		<param name="column" value="throwable~THROWABLE" />
+		<param name="column" value="stacktrace~EMPTY" />
+		<param name="usePreparedStatements" value="true" />
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="WARN" />
+			<param name="AcceptOnMatch" value="true" />
+		</filter>
+	</appender>
+
+	<logger name="org.springframework" additivity="false">
+		<level value="warn" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="DB" />
+	</logger>
+
+	<logger name="au.com.speedutils" additivity="false">
+		<level value="warn" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="DB" />
+	</logger>
+
+	<logger name="au.com.highlowgame" additivity="false">
+		<level value="warn" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="DB" />
+	</logger>
+	
+	<logger name="org.apache.catalina.connector" additivity="false">
+		<level value="error" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="DB" />
+	</logger>
+
+	<logger name="org.hibernate" additivity="false">
+		<level value="warn" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="DB" />
+	</logger>
+
+	<root>
+		<level value="warn" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="DB" />
+	</root>
+
+</log4j:configuration>

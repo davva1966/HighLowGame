@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+	<global-method-security pre-post-annotations="enabled" secured-annotations="enabled">
+		<expression-handler ref="expressionHandler" />
+	</global-method-security>
+
+	<beans:bean id="webSecurityExpressionHandler" class="au.com.highlowgame.util.SSWebSecurityExpressionHandler" />
+	<beans:bean id="expressionHandler" class="au.com.highlowgame.util.SSMethodSecurityExpressionHandler" />
+	
+	<beans:bean id="httpFirewall" class="org.springframework.security.web.firewall.DefaultHttpFirewall" >
+			<beans:property name="allowUrlEncodedSlash" value="true" />
+	</beans:bean>
+
+	<!-- HTTP security configurations -->
+
+	<http pattern="/resources/images/**" security="none" />
+	<http pattern="/utility/ping*" security="none" />
+	<http pattern="/aws/**" security="none" />
+	
+	<http-firewall ref="httpFirewall"/>
+	
+	<http auto-config="true" use-expressions="true" request-matcher-ref="htmlRequestMatcher" access-decision-manager-ref="accessDecisionManager">
+		<csrf disabled="true"/>
+		<remember-me key="au.com.highlowgame" services-ref="rememberMeServices" />
+		<access-denied-handler error-page="/accessDenied" />
+		<form-login username-parameter="j_username" password-parameter="j_password" login-processing-url="/resources/j_spring_security_check" login-page="/login" authentication-failure-url="/login?login_error=t" />
+		<logout logout-url="/resources/j_spring_security_logout" success-handler-ref="ssLogoutSuccessHandler" />
+
+		<intercept-url pattern="/resources/**" access="permitAll" />
+		<intercept-url pattern="/login*" access="permitAll" />
+		<intercept-url pattern="/forgotPassword/**" access="permitAll" />
+		<intercept-url pattern="/accessDenied*" access="permitAll" />
+		<intercept-url pattern="/sessionTimeout*" access="permitAll" />
+
+		<intercept-url pattern="/resetPassword*" access="hasSSAuthority('ADMIN')" />
+
+		<intercept-url pattern="/approles/**" method="GET" access="hasSSAnyAuthority('VIEW_APPROLE', 'MAINTAIN_APPROLE')" />
+		<intercept-url pattern="/approles/**" access="hasSSAuthority('MAINTAIN_APPROLE')" />
+
+		<intercept-url pattern="/players/myinfo*" access="hasSSAuthority('UPDATE_MYINFO')" />
+		<intercept-url pattern="/players/**" method="GET" access="hasSSAuthority('ADMIN')" />
+		<intercept-url pattern="/players/**" access="hasSSAuthority('ADMIN')" />
+
+		<intercept-url pattern="/addresses/**" method="GET" access="hasSSAnyAuthority('VIEW_ADDRESS', 'MAINTAIN_ADDRESS')" />
+		<intercept-url pattern="/addresses/**" access="hasSSAuthority('MAINTAIN_ADDRESS')" />
+
+		<intercept-url pattern="/globalsettings/**" method="GET" access="hasSSAnyAuthority('VIEW_GLOBALSETTING', 'MAINTAIN_GLOBALSETTING')" />
+		<intercept-url pattern="/globalsettings/**" access="hasSSAuthority('MAINTAIN_GLOBALSETTING')" />
+
+		<intercept-url pattern="/tenants/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANT', 'MAINTAIN_TENANT')" />
+		<intercept-url pattern="/tenants/**" access="hasSSAuthority('MAINTAIN_TENANT')" />
+		
+		<intercept-url pattern="/archivedtenants/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANT', 'MAINTAIN_TENANT')" />
+		<intercept-url pattern="/archivedtenants/**" access="hasSSAuthority('MAINTAIN_TENANT')" />
+
+		<intercept-url pattern="/tenantproducts/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANTPRODUCT', 'MAINTAIN_TENANTPRODUCT')" />
+		<intercept-url pattern="/tenantproducts/**" access="hasSSAuthority('MAINTAIN_TENANTPRODUCT')" />
+		
+		<intercept-url pattern="/archivedtenantproducts/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANT', 'MAINTAIN_TENANT')" />
+		<intercept-url pattern="/archivedtenantproducts/**" access="hasSSAuthority('MAINTAIN_TENANT')" />
+
+		<intercept-url pattern="/tenantevents/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANTEVENT', 'MAINTAIN_TENANTEVENT')" />
+		<intercept-url pattern="/tenantevents/**" access="hasSSAuthority('MAINTAIN_TENANTEVENT')" />
+		
+		<intercept-url pattern="/archivedtenantevents/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANTEVENT', 'MAINTAIN_TENANTEVENT')" />
+		<intercept-url pattern="/archivedtenantevents/**" access="hasSSAuthority('MAINTAIN_TENANTEVENT')" />
+
+		<intercept-url pattern="/countryinstances/**" method="GET" access="hasSSAnyAuthority('VIEW_COUNTRYINSTANCE', 'MAINTAIN_COUNTRYINSTANCE')" />
+		<intercept-url pattern="/countryinstances/**" access="hasSSAuthority('MAINTAIN_COUNTRYINSTANCE')" />
+
+		<intercept-url pattern="/countrypricetiers/**" method="GET" access="hasSSAnyAuthority('VIEW_COUNTRYPRICETIER', 'MAINTAIN_COUNTRYPRICETIER')" />
+		<intercept-url pattern="/countrypricetiers/**" access="hasSSAuthority('MAINTAIN_COUNTRYPRICETIER')" />
+
+		<intercept-url pattern="/setupgstrates/**" method="GET" access="hasSSAnyAuthority('VIEW_SETUPGSTRATE', 'MAINTAIN_SETUPGSTRATE')" />
+		<intercept-url pattern="/setupgstrates/**" access="hasSSAuthority('MAINTAIN_SETUPGSTRATE')" />
+
+		<intercept-url pattern="/setupunits/**" method="GET" access="hasSSAnyAuthority('VIEW_SETUPUNIT', 'MAINTAIN_SETUPUNIT')" />
+		<intercept-url pattern="/setupunits/**" access="hasSSAuthority('MAINTAIN_SETUPUNIT')" />
+
+		<intercept-url pattern="/languages/**" method="GET" access="hasSSAnyAuthority('VIEW_LANGUAGE', 'MAINTAIN_LANGUAGE')" />
+		<intercept-url pattern="/languages/**" access="hasSSAuthority('MAINTAIN_LANGUAGE')" />
+
+		<intercept-url pattern="/settingategories/**" method="GET" access="hasSSAnyAuthority('VIEW_SETTINGCATEGORY', 'MAINTAIN_SETTINGCATEGORY')" />
+		<intercept-url pattern="/settingategories/**" access="hasSSAuthority('MAINTAIN_SETTINGCATEGORY')" />
+
+		<intercept-url pattern="/products/**" method="GET" access="hasSSAnyAuthority('VIEW_PRODUCT', 'MAINTAIN_PRODUCT')" />
+		<intercept-url pattern="/products/**" access="hasSSAuthority('MAINTAIN_PRODUCT')" />
+
+		<intercept-url pattern="/productinfos/**" method="GET" access="hasSSAnyAuthority('VIEW_PRODUCT', 'MAINTAIN_PRODUCT')" />
+		<intercept-url pattern="/productinfos/**" access="hasSSAuthority('MAINTAIN_PRODUCT')" />
+
+		<intercept-url pattern="/producttypes/**" method="GET" access="hasSSAnyAuthority('VIEW_PRODUCTTYPE', 'MAINTAIN_PRODUCTTYPE')" />
+		<intercept-url pattern="/producttypes/**" access="hasSSAuthority('MAINTAIN_PRODUCTTYPE')" />
+
+		<intercept-url pattern="/producttypeproperties/**" method="GET" access="hasSSAnyAuthority('VIEW_PRODUCTTYPEPROPERTY', 'MAINTAIN_PRODUCTTYPEPROPERTY')" />
+		<intercept-url pattern="/producttypeproperties/**" access="hasSSAuthority('MAINTAIN_PRODUCTTYPEPROPERTY')" />
+
+		<intercept-url pattern="/applications/**" method="GET" access="hasSSAnyAuthority('VIEW_APPLICATION', 'MAINTAIN_APPLICATION')" />
+		<intercept-url pattern="/applications/**" access="hasSSAuthority('MAINTAIN_APPLICATION')" />
+
+		<intercept-url pattern="/documentbackgroundimages/**" method="GET" access="hasSSAnyAuthority('VIEW_DOCUMENTBACKGROUNDIMAGE', 'MAINTAIN_DOCUMENTBACKGROUNDIMAGE')" />
+		<intercept-url pattern="/documentbackgroundimages/**" access="hasSSAuthority('MAINTAIN_DOCUMENTBACKGROUNDIMAGE')" />
+
+		<intercept-url pattern="/**" access="isAuthenticated()" />
+
+		<session-management invalid-session-url="/sessionTimeout" />
+		
+		<custom-filter before="FIRST" ref="forceSSLFilter" />
+	</http>
+
+	<beans:bean id="rememberMeServices" class="au.com.highlowgame.user.SSTokenBasedRememeberMeServices">
+		<beans:constructor-arg value="au.com.highlowgame" />
+		<beans:constructor-arg ref="extendedUserDetailsService" />
+	</beans:bean>
+
+	<beans:bean id="WebExprVoter" class="org.springframework.security.web.access.expression.WebExpressionVoter">
+		<beans:property name="expressionHandler" ref="webSecurityExpressionHandler" />
+	</beans:bean>
+
+
+	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:ref bean="WebExprVoter" />
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="jsonRequestMatcher" class="au.com.highlowgame.util.JSONRequestMatcher" />
+	<beans:bean id="htmlRequestMatcher" class="au.com.highlowgame.util.HTMLRequestMatcher" />
+	
+	<beans:bean id="forceSSLFilter" class="au.com.highlowgame.util.AWSForceSSLFilter">
+		<beans:constructor-arg value="${force_ssl}" />
+	</beans:bean>
+
+	<beans:bean id="checkCredentialsFilter" class="au.com.highlowgame.util.CheckCredentialsFilter">
+		<beans:constructor-arg>
+			<beans:ref bean="authenticationManager" />
+		</beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="ssLogoutSuccessHandler" class="au.com.highlowgame.util.SpeedSolutionsLogoutSuccessHandler" />
+
+	<!-- Configure Authentication mechanism -->
+	<beans:bean id="tenantAuthenticationProvider" class="au.com.highlowgame.user.AuthenticationProvider">
+		<beans:property name="userDetailsService" ref="extendedUserDetailsService" />
+		<beans:property name="passwordEncoder" ref="passwordEncoder" />
+		<beans:property name="hideUserNotFoundExceptions" value="false" />
+	</beans:bean>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider ref='tenantAuthenticationProvider' />
+	</authentication-manager>
+
+</beans:beans>

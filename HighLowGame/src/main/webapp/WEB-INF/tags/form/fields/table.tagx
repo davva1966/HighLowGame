@@ -1,0 +1,638 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:ssutil="http://tagutils" xmlns:sec="http://www.springframework.org/security/tags" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+	<jsp:directive.tag import="java.util.ArrayList" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The identifier for this tag (do not change!)" />
+	<jsp:directive.attribute name="data" type="java.util.Collection" required="true" rtexprvalue="true" description="The collection to be displayed in the table" />
+	<jsp:directive.attribute name="path" type="java.lang.String" required="true" rtexprvalue="true" description="Specify the URL path" />
+	<jsp:directive.attribute name="typeIdFieldName" type="java.lang.String" required="false" rtexprvalue="true" description="The identifier field name for the type (defaults to 'id')" />
+	<jsp:directive.attribute name="create" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'create' link into table (default true)" />
+	<jsp:directive.attribute name="update" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'update' link into table (default true)" />
+	<jsp:directive.attribute name="allowUpdateFieldName" type="java.lang.String" required="false" rtexprvalue="true" description="" />
+	<jsp:directive.attribute name="delete" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'delete' link into table (default true)" />
+	<jsp:directive.attribute name="allowDeleteFieldName" type="java.lang.String" required="false" rtexprvalue="true" description="" />
+	<jsp:directive.attribute name="print" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'print' link into table (default false)" />
+	<jsp:directive.attribute name="printConfirmationPath" type="java.lang.String" required="false" rtexprvalue="true" description="The print confirmationPath" />
+	<jsp:directive.attribute name="copy" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'copy' link into table (default false)" />
+	<jsp:directive.attribute name="copyConfirmationPath" type="java.lang.String" required="false" rtexprvalue="true" description="The copy confirmationPath" />
+	<jsp:directive.attribute name="printToTarget" type="java.lang.String" required="false" rtexprvalue="true" />
+	<jsp:directive.attribute name="email" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'email' link into table (default false)" />
+	<jsp:directive.attribute name="emailFieldName" type="java.lang.String" required="false" rtexprvalue="true" description="The email field" />
+	<jsp:directive.attribute name="show" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Is show allowed (default true)" />
+	<jsp:directive.attribute name="emailConfirmationPath" type="java.lang.String" required="false" rtexprvalue="true" description="The email confirmationPath" />
+	<jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+	<jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
+	<jsp:directive.attribute name="parentId" type="java.lang.String" required="false" rtexprvalue="true" description="Parent object id" />
+	<jsp:directive.attribute name="addCheckbox" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include a selection checkbox (default 'false')" />
+	<jsp:directive.attribute name="timeZone" type="java.lang.String" required="false" rtexprvalue="true" description="The id of the time zone to use for date / time values if the field is a date or calendar type" />
+	<jsp:directive.attribute name="permissionName" type="java.lang.String" required="false" rtexprvalue="true" description="The name of the required maintain permission" />
+	<jsp:directive.attribute name="entityName" type="java.lang.String" required="false" rtexprvalue="true" description="The name of the entity being listed (used for translation)" />
+	<jsp:directive.attribute name="printLabel" type="java.lang.String" required="false" rtexprvalue="true" description="The label for the print function" />
+	<jsp:directive.attribute name="emailLabel" type="java.lang.String" required="false" rtexprvalue="true" description="The label for the email function" />
+
+	<c:if test="${empty render or render}">
+
+		<c:if test="${not empty permissionName}">
+			<spring:eval expression="permissionName" var="maint_perm1" />
+			<spring:eval expression="permissionName" var="maint_perm2" />
+		</c:if>
+
+		<c:if test="${empty permissionName and not empty data}">
+			<spring:eval expression="data[0].maintainPermissionName" var="maint_perm1" />
+			<spring:eval expression="data[0].maintainPermissionName" var="maint_perm2" />
+		</c:if>
+
+		<c:if test="${empty permissionName and empty data}">
+			<spring:eval expression="ss_utility.getMaintainPermissionName('${path}')" var="maint_perm1" />
+			<spring:eval expression="ss_utility.getMaintainPermissionNameSingle('${path}')" var="maint_perm2" />
+		</c:if>
+
+		<c:if test="${empty timeZone}">
+			<spring:eval expression="ss_utility.getTimeZoneID()" var="timeZone" />
+		</c:if>
+
+		<c:if test="${empty printToTarget}">
+			<c:set value="_blank" var="printToTarget" />
+		</c:if>
+
+		<style type="text/css">
+tbody tr.clickable:hover td {
+	background: #CCCCCC;
+	color: #FF6321;
+	cursor: pointer;
+}
+</style>
+
+		<c:set var="columnProperties" scope="request" />
+		<c:set var="columnLabels" scope="request" />
+		<c:set var="columnMaxLengths" scope="request" />
+		<c:set var="columnTypes" scope="request" />
+		<c:set var="columnDatePatterns" scope="request" />
+		<c:set var="columnAlignments" scope="request" />
+		<c:set var="columnEscapeValues" scope="request" />
+
+		<jsp:doBody />
+
+		<c:if test="${empty typeIdFieldName}">
+			<c:set var="typeIdFieldName" value="id" />
+		</c:if>
+
+		<c:if test="${empty create}">
+			<c:set var="create" value="true" />
+		</c:if>
+
+		<c:if test="${empty update}">
+			<c:set var="update" value="true" />
+		</c:if>
+
+		<c:if test="${empty delete}">
+			<c:set var="delete" value="true" />
+		</c:if>
+
+		<c:if test="${empty print}">
+			<c:set var="print" value="false" />
+		</c:if>
+
+		<c:if test="${empty copy}">
+			<c:set var="copy" value="false" />
+		</c:if>
+
+		<c:if test="${empty email}">
+			<c:set var="email" value="false" />
+		</c:if>
+
+		<c:if test="${empty addCheckbox}">
+			<c:set var="addCheckbox" value="false" />
+		</c:if>
+
+		<c:if test="${create}">
+			<sec:authorize access="!hasSSAnyAuthority('${maint_perm1}', '${maint_perm2}')">
+				<c:set var="create" value="false" />
+			</sec:authorize>
+		</c:if>
+
+		<c:if test="${update}">
+			<sec:authorize access="!hasSSAnyAuthority('${maint_perm1}', '${maint_perm2}')">
+				<c:set var="update" value="false" />
+			</sec:authorize>
+		</c:if>
+
+		<c:if test="${delete}">
+			<sec:authorize access="!hasSSAnyAuthority('${maint_perm1}', '${maint_perm2}')">
+				<c:set var="delete" value="false" />
+			</sec:authorize>
+		</c:if>
+
+		<c:if test="${email}">
+			<sec:authorize access="!hasSSAnyAuthority('${maint_perm1}', '${maint_perm2}')">
+				<c:set var="email" value="false" />
+			</sec:authorize>
+		</c:if>
+
+		<c:if test="${copy}">
+			<sec:authorize access="!hasSSAnyAuthority('${maint_perm1}', '${maint_perm2}')">
+				<c:set var="copy" value="false" />
+			</sec:authorize>
+		</c:if>
+
+		<c:if test="${empty show}">
+			<c:set var="show" value="true" />
+		</c:if>
+
+		<spring:url value="/resources/images/checkmark.png" var="checkmarkURL" />
+
+		<spring:message var="typeName" code="menu_item_${fn:toLowerCase(fn:split(id,'_')[fn:length(fn:split(id,'_')) - 1])}_new_label" htmlEscape="false" />
+		<c:set var="lengths" value="${fn:split(columnMaxLengths, '&#9999;')}" scope="request" />
+		<c:set var="types" value="${fn:split(columnTypes, '&#9999;')}" scope="request" />
+		<c:set var="patterns" value="${fn:split(columnDatePatterns, '&#9999;')}" scope="request" />
+		<c:set var="alignments" value="${fn:split(columnAlignments, '&#9999;')}" scope="request" />
+		<c:set var="escapeValues" value="${fn:split(columnEscapeValues, '&#9999;')}" scope="request" />
+
+		<spring:eval var="colCounter" expression="0" />
+
+		<c:if test="${create}">
+			<span class="new"> <spring:url value="${path}" var="create_url" htmlEscape="false">
+					<spring:param name="form" />
+					<c:if test="${not empty parentId}">
+						<spring:param name="parentId" value="${parentId}" />
+					</c:if>
+				</spring:url> 
+				<spring:url value="/resources/images/add.png" var="create_img_url" /> 
+					<c:if test="${not empty entityName}">
+						<spring:message code="label_create_${entityName}" var="add_message" htmlEscape="false" />
+					</c:if> 
+					<c:if test="${empty add_message}">
+						<spring:message arguments="${typeName}" code="global_menu_new" var="add_message" htmlEscape="false" />
+					</c:if> 
+					<a href="${create_url}"> <img alt="${fn:escapeXml(add_message)}" src="${create_img_url}" title="${fn:escapeXml(add_message)}" /></a>
+			</span>
+		</c:if>
+
+		<div style="overflow-x: auto">
+			<table>
+				<thead>
+					<tr>
+						<c:if test="${addCheckbox}">
+							<th></th>
+							<spring:eval var="colCounter" expression="colCounter  + 1" />
+						</c:if>
+						<c:forTokens items="${columnLabels}" delims="${'&#9999;'}" var="columnHeading" varStatus="num">
+							<c:set var="columnAlignment" value="${alignments[num.count-1]}" />
+							<th style="text-align: ${columnAlignment}"><c:out value="${columnHeading}" /> <spring:eval var="colCounter" expression="colCounter  + 1" /></th>
+						</c:forTokens>
+						<!-- <th></th>  -->
+						<c:if test="${update}">
+							<th></th>
+							<spring:eval var="colCounter" expression="colCounter  + 1" />
+						</c:if>
+						<c:if test="${delete}">
+							<th></th>
+							<spring:eval var="colCounter" expression="colCounter  + 1" />
+						</c:if>
+						<c:if test="${print}">
+							<th></th>
+							<spring:eval var="colCounter" expression="colCounter  + 1" />
+						</c:if>
+						<c:if test="${copy}">
+							<th></th>
+							<spring:eval var="colCounter" expression="colCounter  + 1" />
+						</c:if>
+						<c:if test="${email}">
+							<th></th>
+							<spring:eval var="colCounter" expression="colCounter  + 1" />
+						</c:if>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${data}" var="item">
+						<c:set var="itemId">
+							<!-- <spring:eval expression="item[typeIdFieldName]" /> -->
+							<spring:eval expression="item.${typeIdFieldName}" />
+						</c:set>
+						<spring:url value="${path}/${itemId}" var="show_form_url" />
+						<tr data-href="${show_form_url}">
+							<c:if test="${addCheckbox}">
+								<td class="utilbox"><script type="text/javascript">
+									dojo.require("dijit.form.CheckBox");
+								</script> <input class="small" id="selection_checkbox_${itemId}" name="selection_checkbox_${itemId}" type="checkbox" /> <script type="text/javascript">
+								Spring
+										.addDecoration(new Spring.ElementDecoration(
+												{
+													elementId : 'selection_checkbox_${itemId}',
+													widgetType : 'dijit.form.CheckBox',
+													widgetAttrs : {}
+												}));
+							</script></td>
+							</c:if>
+							<c:forTokens items="${columnProperties}" delims="${'&#9999;'}" var="column" varStatus="num">
+								<c:set var="columnMaxLength" value="${lengths[num.count-1]}" />
+								<c:set var="columnType" value="${types[num.count-1]}" />
+								<c:set var="columnDatePattern" value="${patterns[num.count-1]}" />
+								<c:set var="columnAlignment" value="${alignments[num.count-1]}" />
+								<c:set var="columnEscapeValue" value="${escapeValues[num.count-1]}" />
+								<c:set var="printText" value="true" />
+
+								<c:set var="color" value="${ssutil:propertyColor(item, column)}" />
+
+								<c:if test="${empty color}">
+									<c:set value="text-align:${columnAlignment}" var="style" />
+								</c:if>
+								<c:if test="${not empty color}">
+									<c:set value="text-align:${columnAlignment};color:${color}" var="style" />
+								</c:if>
+
+								<td style="${style}"><c:choose>
+										<c:when test="${columnType eq 'booleanImage'}">
+											<c:set value="${item[column]}" var="booleanValue" />
+											<c:set var="printText" value="false" />
+											<c:if test="${booleanValue}">
+												<img class="listimage" src="${checkmarkURL}" alt="${booleanValue}" />
+											</c:if>
+										</c:when>
+										<c:when test="${columnType eq 'thumbnail'}">
+											<c:set var="printText" value="false" />
+											<c:url value="${item[column]}" var="imageURL" />
+											<img class="thumbnail" src="${imageURL}" alt="" />
+										</c:when>
+										<c:when test="${columnType eq 'date'}">
+											<fmt:setLocale value="${ss_locale}" scope="session" />
+											<spring:escapeBody>
+												<fmt:formatDate timeZone="${timeZone}" value="${item[column]}" pattern="${fn:escapeXml(columnDatePattern)}" var="colTxt" />
+											</spring:escapeBody>
+										</c:when>
+										<c:when test="${columnType eq 'calendar'}">
+											<fmt:setLocale value="${ss_locale}" scope="session" />
+											<spring:escapeBody>
+												<fmt:formatDate timeZone="${timeZone}" value="${item[column].time}" pattern="${fn:escapeXml(columnDatePattern)}" var="colTxt" />
+											</spring:escapeBody>
+										</c:when>
+										<c:otherwise>
+											<c:set var="colTxt">
+												<spring:eval expression="item.${column}" htmlEscape="false" />
+											</c:set>
+										</c:otherwise>
+									</c:choose> 
+								
+									<c:if test="${printText}">
+
+										<c:if test="${columnMaxLength ge 0}">
+											<c:if test="${fn:length(colTxt) gt columnMaxLength}">
+												<ssutil:shorten value="${colTxt}" maxLength="${columnMaxLength}" var="shortenedTxt" />
+												<spring:eval expression="shortenedTxt" var="colTxt" htmlEscape="false" />
+											</c:if>
+										</c:if>
+										
+										<c:if test="${columnEscapeValue}">
+											<c:set var="value" value="${colTxt}" />
+											<c:if test="${not empty value}">
+												<ssutil:lineToBreakLine value="${fn:escapeXml(value)}" var="valueWithLineBreaks" />
+												<spring:eval expression="valueWithLineBreaks" var="colTxt" htmlEscape="false" />
+											</c:if>
+										</c:if>
+
+										<c:if test="${not columnEscapeValue}">
+											<c:set var="value" value="${colTxt}" />
+											<c:if test="${not empty value}">
+												<ssutil:lineToBreakLine value="${value}" var="valueWithLineBreaks" />
+												<spring:eval expression="valueWithLineBreaks" var="colTxt" htmlEscape="false" />
+											</c:if>
+										</c:if>
+
+										<c:out value="${colTxt}" escapeXml="false" />
+
+									</c:if></td>
+							</c:forTokens>
+
+							<!-- Added print -->
+							<c:if test="${print}">
+								<td class="utilbox">
+									<spring:url value="${path}/print/${itemId}" var="print_url">
+										<spring:param name="form" />
+									</spring:url> 
+									<spring:url value="/resources/images/print.png" var="print_image_url" /> 
+									<c:if test="${empty printLabel}">
+										<c:if test="${not empty entityName}">
+											<spring:message code="label_print_${entityName}" var="printLabel" htmlEscape="false" />
+										</c:if> 
+										<c:if test="${empty printLabel}">
+											<spring:message arguments="${typeName}" code="entity_print" var="printLabel" htmlEscape="false" />
+										</c:if>
+									</c:if> 
+									<a href="${print_url}" id="print_${itemId}" alt="${fn:escapeXml(printLabel)}" title="${fn:escapeXml(printLabel)}" target="${printToTarget}"> <img alt="${fn:escapeXml(printLabel)}" class="image" src="${print_image_url}" title="${fn:escapeXml(printLabel)}" /></a> <c:if
+										test="${not empty printConfirmationPath}">
+										<spring:message code="yes_print" var="yes_print" htmlEscape="false" />
+										<spring:message code="no_cancel" var="no_cancel" htmlEscape="false" />
+										<script type="text/javascript">
+											jQuery(document)
+													.ready(
+															function() {
+																var id = '#print_'
+																		+ '${itemId}';
+																$(id)
+																		.on(
+																				'click',
+																				function() {
+																					var proceed = false;
+
+																					$
+																							.ajax({
+																								async : false,
+																								type : 'POST',
+																								url : rootFolder
+																										+ '${printConfirmationPath}/${itemId}',
+																								data : '${itemId}',
+																								dataType : 'json',
+																								success : function(
+																										response) {
+																									var message = "";
+																									$
+																											.each(
+																													response,
+																													function(
+																															i) {
+																														message = message
+																																+ this
+																																+ "\n";
+																													});
+																									if (message.length > 0) {
+																										confirmLink(
+																												'${print_url}',
+																												null,
+																												message,
+																												'${yes_print}',
+																												'${no_cancel}');
+																										return false;
+																									} else {
+																										proceed = true;
+																									}
+																								}
+																							});
+
+																					return proceed;
+																				});
+															});
+										</script>
+									</c:if></td>
+							</c:if>
+							<!-- Added print -->
+
+							<!-- Added email -->
+							<c:if test="${email}">
+								<c:if test="${not empty emailFieldName}">
+									<c:set var="emailAddress">
+										<spring:eval expression="item.${emailFieldName}" />
+									</c:set>
+								</c:if>
+								<td class="utilbox">
+									<c:if test="${empty emailFieldName or not empty emailAddress}">
+										<spring:url value="${path}/email/${itemId}" var="email_form_url">
+											<spring:param name="form" />
+										</spring:url>
+										<spring:url value="/resources/images/email.png" var="email_image_url" />
+										
+										<c:if test="${empty emailLabel}">
+											<c:if test="${not empty entityName}">
+												<spring:message code="label_email_${entityName}" var="emailLabel" htmlEscape="false" />
+											</c:if> 
+											<c:if test="${empty emailLabel}">
+												<spring:message arguments="${typeName}" code="entity_email" var="emailLabel" htmlEscape="false" />
+											</c:if>
+										</c:if> 
+										
+										<a href="${email_form_url}" id="email_${itemId}" alt="${fn:escapeXml(emailLabel)}" title="${fn:escapeXml(emailLabel)}"> <img alt="${fn:escapeXml(emailLabel)}" class="image" src="${email_image_url}" title="${fn:escapeXml(emailLabel)}" /></a>
+										<c:if test="${not empty emailConfirmationPath}">
+											<spring:message code="yes_email" var="yes_email" htmlEscape="false" javaScriptEscape="true" />
+											<spring:message code="no_cancel" var="no_cancel" htmlEscape="false" javaScriptEscape="true" />
+											<script type="text/javascript">
+												jQuery(document)
+														.ready(
+																function() {
+																	var id = '#email_'
+																			+ '${itemId}';
+																	$(id)
+																			.on(
+																					'click',
+																					function() {
+																						var proceed = false;
+
+																						$
+																								.ajax({
+																									async : false,
+																									type : 'POST',
+																									url : rootFolder
+																											+ '${emailConfirmationPath}/${itemId}',
+																									data : '${itemId}',
+																									dataType : 'json',
+																									success : function(
+																											response) {
+																										var message = "";
+																										$
+																												.each(
+																														response,
+																														function(
+																																i) {
+																															message = message
+																																	+ this
+																																	+ "\n";
+																														});
+																										if (message.length > 0) {
+																											confirmLink(
+																													'${email_form_url}',
+																													null,
+																													message,
+																													'${yes_email}',
+																													'${no_cancel}');
+																											return false;
+																										} else {
+																											proceed = true;
+																										}
+																									}
+																								});
+
+																						return proceed;
+																					});
+																});
+											</script>
+										</c:if>
+									</c:if></td>
+							</c:if>
+							<!-- Added email -->
+
+
+							<c:if test="${update}">
+								<c:set var="allowUpdate" value="true" />
+								<c:if test="${not empty allowUpdateFieldName}">
+									<c:set var="allowUpdate">
+										<spring:eval expression="item.${allowUpdateFieldName}" />
+									</c:set>
+								</c:if>
+								<td class="utilbox"><c:if test="${allowUpdate}">
+										<spring:url value="${path}/${itemId}" var="update_form_url">
+											<spring:param name="form" />
+										</spring:url>
+
+										<spring:url value="/resources/images/update.png" var="update_image_url" />
+										<c:if test="${not empty entityName}">
+											<spring:message code="label_edit_${entityName}" var="update_label" htmlEscape="false" />
+										</c:if>
+										<c:if test="${empty update_label}">
+											<spring:message arguments="${typeName}" code="entity_update" var="update_label" htmlEscape="false" />
+										</c:if>
+
+										<a href="${update_form_url}" alt="${fn:escapeXml(update_label)}" title="${fn:escapeXml(update_label)}"> <img alt="${fn:escapeXml(update_label)}" class="image" src="${update_image_url}" title="${fn:escapeXml(update_label)}" />
+										</a>
+									</c:if></td>
+							</c:if>
+
+							<!-- Added copy -->
+							<c:if test="${copy}">
+								<td class="utilbox"><spring:url value="${path}/copy/${itemId}" var="copy_url">
+										<spring:param name="form" />
+									</spring:url> <spring:url value="/resources/images/copy.png" var="copy_image_url" /> <c:if test="${not empty entityName}">
+										<spring:message code="label_copy_${entityName}" var="copy_label" htmlEscape="false" />
+									</c:if> <c:if test="${empty copy_label}">
+										<spring:message arguments="${typeName}" code="entity_copy" var="copy_label" htmlEscape="false" />
+									</c:if> <a href="${copy_url}" id="copy_${itemId}" alt="${fn:escapeXml(copy_label)}" title="${fn:escapeXml(copy_label)}"> <img alt="${fn:escapeXml(copy_label)}" class="image" src="${copy_image_url}" title="${fn:escapeXml(copy_label)}" /></a> <c:if test="${not empty copyConfirmationPath}">
+										<spring:message code="yes_copy" var="yes_copy" htmlEscape="false" />
+										<spring:message code="no_cancel" var="no_cancel" htmlEscape="false" />
+										<script type="text/javascript">
+											jQuery(document)
+													.ready(
+															function() {
+																var id = '#copy_'
+																		+ '${itemId}';
+																$(id)
+																		.on(
+																				'click',
+																				function() {
+																					var proceed = false;
+
+																					$
+																							.ajax({
+																								async : false,
+																								type : 'POST',
+																								url : rootFolder
+																										+ '${copyConfirmationPath}/${itemId}',
+																								data : '${itemId}',
+																								dataType : 'json',
+																								success : function(
+																										response) {
+																									var message = "";
+																									$
+																											.each(
+																													response,
+																													function(
+																															i) {
+																														message = message
+																																+ this
+																																+ "\n";
+																													});
+																									if (message.length > 0) {
+																										confirmLink(
+																												'${copy_url}',
+																												null,
+																												message,
+																												'${yes_copy}',
+																												'${no_cancel}');
+																										return false;
+																									} else {
+																										proceed = true;
+																									}
+																								}
+																							});
+
+																					return proceed;
+																				});
+															});
+										</script>
+									</c:if></td>
+							</c:if>
+							<!-- Added copy -->
+
+
+
+
+							<c:if test="${delete}">
+								<c:set var="allowDelete" value="true" />
+								<c:if test="${not empty allowDeleteFieldName}">
+									<c:set var="allowDelete">
+										<spring:eval expression="item.${allowDeleteFieldName}" />
+									</c:set>
+								</c:if>
+								<td class="utilbox"><c:if test="${allowDelete}">
+										<spring:url value="${path}/${itemId}" var="delete_form_url" />
+										<spring:url value="/resources/images/delete.png" var="delete_image_url" />
+										<form:form action="${delete_form_url}" method="DELETE" id="${itemId}">
+
+											<c:if test="${not empty entityName}">
+												<spring:message code="label_delete_${entityName}" var="delete_label" htmlEscape="false" />
+											</c:if>
+											<c:if test="${empty delete_label}">
+												<spring:message arguments="${typeName}" code="entity_delete" var="delete_label" htmlEscape="false" />
+											</c:if>
+
+											<c:if test="${not empty entityName}">
+												<spring:message code="label_delete_confirm_message_${entityName}" var="delete_confirm_msg" htmlEscape="false" />
+											</c:if>
+											<c:if test="${empty delete_confirm_msg}">
+												<spring:message arguments="${typeName}" code="entity_delete_confirm_message" var="delete_confirm_msg" htmlEscape="false" />
+											</c:if>
+
+											<spring:message code="yes_delete" var="yes_delete" htmlEscape="false" />
+											<spring:message code="no_cancel" var="no_cancel" htmlEscape="false" />
+											<input alt="${fn:escapeXml(delete_label)}" class="image" src="${delete_image_url}" title="${fn:escapeXml(delete_label)}" type="image" value="${fn:escapeXml(delete_label)}"
+												onclick="confirmDelete('${itemId}', '${delete_label}', '${delete_confirm_msg}', '${yes_delete}', '${no_cancel}'); return false;" />
+											<c:if test="${not empty param.page}">
+												<input name="page" type="hidden" value="${fn:escapeXml(param.page)}" />
+											</c:if>
+											<c:if test="${not empty param.size}">
+												<input name="size" type="hidden" value="${fn:escapeXml(param.size)}" />
+											</c:if>
+										</form:form>
+									</c:if></td>
+							</c:if>
+						</tr>
+					</c:forEach>
+				</tbody>
+
+				<c:if test="${not empty maxPages}">
+					<tr class="footer">
+						<td colspan="${colCounter}"><c:if test="${not empty maxPages}">
+								<util:pagination maxPages="${maxPages}" page="${param.page}" size="${param.size}" />
+							</c:if></td>
+					</tr>
+				</c:if>
+			</table>
+		</div>
+
+		<c:if test="${show}">
+			<script>
+				jQuery(function($) {
+					var clickable = $('tbody tr[data-href]').addClass(
+							'clickable').click(function() {
+						window.location = $(this).attr('data-href');
+					});
+					clickable.find('a').hover(function() {
+						$(this).parents('tr').unbind('click');
+					}, function() {
+						$(this).parents('tr').click(function() {
+							window.location = $(this).attr('data-href');
+						});
+					});
+					clickable.find('input').hover(function() {
+						$(this).parents('tr').unbind('click');
+					}, function() {
+						$(this).parents('tr').click(function() {
+							window.location = $(this).attr('data-href');
+						});
+					});
+				});
+
+				//*[@id="selection_checkbox_12"]
+			</script>
+		</c:if>
+
+	</c:if>
+
+</jsp:root>

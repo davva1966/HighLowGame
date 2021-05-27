@@ -1,0 +1,67 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+	<jsp:output omit-xml-declaration="yes" />
+
+	<jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The identifier for this tag (do not change!)" />
+	<jsp:directive.attribute name="items" type="java.util.Collection" required="true" rtexprvalue="true" description="The name of the collection displayed in the select box" />
+	<jsp:directive.attribute name="itemLabel" type="java.lang.String" required="false" rtexprvalue="true" description="Name of the property mapped to the inner text of the 'option' tag (will override the configured converter)" />
+	<jsp:directive.attribute name="itemValue" type="java.lang.String" required="false" rtexprvalue="true" description="The identifier used as value in the select box (defaults to 'id' for non enum types)" />
+	<jsp:directive.attribute name="field" type="java.lang.String" required="true" rtexprvalue="true" description="The field exposed from the form backing object" />
+	<jsp:directive.attribute name="disabled" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Specify if this field should be enabled" />
+	<jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+	<jsp:directive.attribute name="addBreak" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if a line break should be added after the input (default 'true')" />
+
+	<c:if test="${empty render or render}">
+
+		<c:if test="${empty itemLabel}">
+			<c:set value="label" var="itemLabel" />
+		</c:if>
+
+		<c:if test="${empty itemValue}">
+			<c:set value="value" var="itemValue" />
+		</c:if>
+
+		<c:if test="${empty disabled}">
+			<c:set value="false" var="disabled" />
+		</c:if>
+
+		<c:if test="${empty addBreak}">
+			<c:set value="true" var="addBreak" />
+		</c:if>
+
+		<c:set var="sec_field">
+			<spring:escapeBody javaScriptEscape="true">${field}</spring:escapeBody>
+		</c:set>
+
+		<c:set var="sec_itemLabel">
+			<spring:escapeBody htmlEscape="true">${itemLabel}</spring:escapeBody>
+		</c:set>
+
+		<c:if test="${not empty items}">
+			<c:forEach items="${items}" var="item">
+				<spring:eval expression="item.${itemValue}" var="value" />
+				<spring:eval expression="item.${itemLabel}" var="label" />
+				<div id="${value}">
+					<label for="_${sec_field}_id" title="${label}" style="${labelCssStyle}"> <c:out value="${label}" />:</label>
+					<form:radiobutton path="${sec_field}" value="${value}" />
+					<form:errors cssClass="errors" id="_${sec_field}_error_id" path="${sec_field}" />
+				</div>
+			</c:forEach>
+		</c:if>
+
+		<script type="text/javascript">
+			dojo.require("dijit.form.RadioButton");	
+			dojo.query("input[type='radio']").forEach(function(element) {
+				Spring.addDecoration(new Spring.ElementDecoration({
+					elementId : element.id,
+					widgetType : 'dijit.form.RadioButton',
+					widgetAttrs : {}
+				}));
+			});
+		</script>
+
+		<c:if test="${addBreak}">
+			<br />
+		</c:if>
+	</c:if>
+</jsp:root>

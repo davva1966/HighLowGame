@@ -1,0 +1,205 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+	<jsp:output omit-xml-declaration="yes" />
+
+	<jsp:directive.attribute name="images" type="java.util.Collection" required="true" rtexprvalue="true" description="The list of backing object images" />
+	<jsp:directive.attribute name="documentId" type="java.lang.String" required="false" rtexprvalue="true" description="The document id" />
+	<jsp:directive.attribute name="url_attr" type="java.lang.String" required="false" rtexprvalue="true" description="The image url attribute" />
+	<jsp:directive.attribute name="thumbnailUrl_attr" type="java.lang.String" required="false" rtexprvalue="true" description="The image thumbnail url attribute" />
+	<jsp:directive.attribute name="name_attr" type="java.lang.String" required="false" rtexprvalue="true" description="The image name attribute" />
+	<jsp:directive.attribute name="title_attr" type="java.lang.String" required="false" rtexprvalue="true" description="The image title attribute" />
+	<jsp:directive.attribute name="delete" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'delete' link into scroller (default false)" />
+	<jsp:directive.attribute name="update" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'update' link into scroller (default false)" />
+	<jsp:directive.attribute name="removePath" type="java.lang.String" required="false" rtexprvalue="true" description="The image remove path" />
+	<jsp:directive.attribute name="removePathStandard" type="java.lang.String" required="false" rtexprvalue="true" description="The standard attachment remove path" />
+	<jsp:directive.attribute name="updatePath" type="java.lang.String" required="false" rtexprvalue="true" description="The image update path" />
+	<jsp:directive.attribute name="lightbox" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Display images in lightbox (default true)" />
+	<jsp:directive.attribute name="uploadLink" type="java.lang.String" required="false" rtexprvalue="true" description="Upload link for new images" />
+	<jsp:directive.attribute name="addBreak" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if a line break should be added after the input (default 'true')" />
+	<jsp:directive.attribute name="resizeUploadToHeight" type="java.lang.Integer" required="false" rtexprvalue="true" description="" />
+	<jsp:directive.attribute name="resizeUploadToWidth" type="java.lang.Integer" required="false" rtexprvalue="true" description="" />
+
+	<c:if test="${empty url_attr}">
+		<c:set var="url_attr" value="url" />
+	</c:if>
+
+	<c:if test="${empty thumbnailUrl_attr}">
+		<c:set var="thumbnailUrl_attr" value="thumbnailUrl" />
+	</c:if>
+
+	<c:if test="${empty name_attr}">
+		<c:set var="name_attr" value="name" />
+	</c:if>
+
+	<c:if test="${empty title_attr}">
+		<c:set var="title_attr" value="title" />
+	</c:if>
+
+	<c:if test="${empty delete}">
+		<c:set var="delete" value="false" />
+	</c:if>
+
+	<c:if test="${empty update}">
+		<c:set var="update" value="false" />
+	</c:if>
+
+	<c:if test="${empty removePath}">
+		<c:set var="removePath" value="removeimage" />
+	</c:if>
+
+	<c:if test="${empty removePathStandard}">
+		<c:set var="removePathStandard" value="removestandardattachment" />
+	</c:if>
+
+	<c:if test="${empty updatePath}">
+		<c:set var="updatePath" value="updateimage" />
+	</c:if>
+
+	<c:if test="${empty lightbox}">
+		<c:set var="lightbox" value="true" />
+	</c:if>
+
+	<c:if test="${empty addBreak}">
+		<c:set value="true" var="addBreak" />
+	</c:if>
+
+	<c:if test="${empty resizeUploadToHeight}">
+		<c:set value="600" var="resizeUploadToHeight" />
+	</c:if>
+
+	<c:if test="${empty resizeUploadToWidth}">
+		<c:set value="600" var="resizeUploadToWidth" />
+	</c:if>
+
+	<spring:url value="/resources/images/delete.png" var="delete_image_url" />
+	<spring:url value="/resources/images/update.png" var="update_image_url" />
+	<spring:message var="typeName" code="menu_item_image_new_label" htmlEscape="false" />
+
+	<c:if test="${not empty images}">
+
+		<div id="smoothscrollable">
+			<c:forEach items="${images}" var="image">
+				<spring:eval expression="image.${url_attr}" var="imageURL" />
+				<spring:eval expression="image.${thumbnailUrl_attr}" var="thumbnailUrl" />
+				<spring:eval expression="image.${name_attr}" var="imageName" />
+				<spring:eval expression="image.${title_attr}" var="imageTitle" />
+				<spring:eval expression="image.isSupportedImage" var="isSupportedImage" />
+				<spring:eval expression="image.isStandardAttachment" var="isStandardAttachment" />
+
+				<spring:eval expression="${update and not isStandardAttachment}" var="updateAllowed" />
+
+				<c:if test="${updateAllowed}">
+					<spring:url value="${updatePath}/${image.id}" var="update_url" />
+					<spring:message arguments="${typeName}" code="entity_update" var="update_label" htmlEscape="false" />
+				</c:if>
+
+				<c:if test="${delete}">
+					<c:if test="${isStandardAttachment}">
+						<spring:url value="${removePathStandard}/${image.id}?document=${documentId}" var="delete_url" />
+					</c:if>
+					<c:if test="${not isStandardAttachment}">
+						<spring:url value="${removePath}/${image.id}" var="delete_url" />
+					</c:if>
+					<spring:message arguments="${typeName}" code="entity_delete" var="delete_label" htmlEscape="false" />
+					<c:set var="delete_confirm_msg">
+						<spring:escapeBody javaScriptEscape="false" htmlEscape="false">
+							<spring:message code="attached_image_delete_confirm" htmlEscape="false" />
+						</spring:escapeBody>
+					</c:set>
+				</c:if>
+
+				<div style="padding: 0">
+
+					<c:if test="${lightbox and isSupportedImage}">
+						<a href="${imageURL}" data-lightbox="images" data-title="${imageTitle}" title="${imageTitle}"><img src="${thumbnailUrl}" alt="${imageName}" /></a>
+					</c:if>
+					<c:if test="${not lightbox or not isSupportedImage}">
+						<a href="${imageURL}" title="${imageTitle}" target="_blank"><img src="${thumbnailUrl}" alt="${imageName}" /></a>
+					</c:if>
+
+					<div style="padding: 0">
+						<c:if test="${delete}">
+							<spring:message arguments="${typeName}" code="entity_delete" var="delete_label" htmlEscape="false" />
+							<spring:message arguments="${typeName}" code="entity_delete_confirm_message" var="delete_confirm_msg" htmlEscape="false" />
+							<spring:message code="yes_delete" var="yes_delete" htmlEscape="false" />
+							<spring:message code="no_cancel" var="no_cancel" htmlEscape="false" />
+							<a style="padding-left: 0" href="${delete_url}" onclick="confirmLink('${delete_url}', '${delete_label}', '${delete_confirm_msg}', '${yes_delete}', '${no_cancel}'); return false;"><img style="padding-left: 0" src="${delete_image_url}" title="${delete_label}" /></a>
+						</c:if>
+						<c:if test="${updateAllowed}">
+							<c:if test="${delete}">
+								<br />
+							</c:if>
+							<a style="padding-left: 0" href="${update_url}"><img style="padding-left: 0" src="${update_image_url}" title="${update_label}" /></a>
+						</c:if>
+					</div>
+
+				</div>
+			</c:forEach>
+		</div>
+
+	</c:if>
+
+	<c:if test="${not empty uploadLink}">
+		<spring:message code="image_upload_link_text" var="imageUploadLink" htmlEscape="false" />
+		<div style="margin-left: 7px; margin-top: 3px">
+			<span><a id="uploadfiles" class="strongLink" href="#">${imageUploadLink}</a></span>
+		</div>
+
+		<c:if test="${addBreak}">
+			<br />
+		</c:if>
+
+		<spring:message code="image_upload_completed" var="imageUploadCompleted" htmlEscape="false" javaScriptEscape="true"/>
+		<spring:message code="image_upload_failed" var="imageUploadFailed" htmlEscape="false" javaScriptEscape="true"/>
+		<script type="text/javascript">
+			$(function() {
+				var uploadSuccess = true;
+				var uploader = new plupload.Uploader(
+						{
+							runtimes : 'gears,html5,flash,silverlight,browserplus,html4',
+							browse_button : 'uploadfiles',
+							unique_names : false,
+							multipart : true,
+							file_data_name : 'file',
+							url : '${uploadLink}',
+							resize : {width : ${resizeUploadToWidth}, height : ${resizeUploadToHeight}},
+							flash_swf_url : '/plupload/js/plupload.flash.swf',
+							silverlight_xap_url : '/plupload/js/plupload.silverlight.xap'
+						});
+
+				uploader.bind('FileUploaded', function(up, file, info) {
+					if (info.response.indexOf("error") == 0) {
+						ssAlert(info.response.split("|")[1]);
+						file.status = plupload.FAILED;
+						uploadSuccess = false;
+					}
+				});
+
+				uploader.bind('UploadComplete', function(up, files) {
+					$("html").removeClass('busy');
+					if (uploadSuccess)
+						showToastMessage('${imageUploadCompleted}', 3000, false);
+					else
+						showToastMessage('${imageUploadFailed}', 5000, false);
+				});
+
+				uploader.init();
+
+				uploader.bind('FilesAdded', function(up, files) {
+					$("html").addClass('busy');
+					uploadSuccess = true;
+					uploader.start();
+					up.refresh();
+				});
+
+				uploader.bind('Error', function(up, err) {
+					$("html").removeClass('busy');
+					ssAlert("Error: " + err.code + ", Message: " + err.message
+							+ (err.file ? ", File: " + err.file.name : ""));
+					up.refresh();
+				});
+
+			});
+		</script>
+	</c:if>
+
+</jsp:root>

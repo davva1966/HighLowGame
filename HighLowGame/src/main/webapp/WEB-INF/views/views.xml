@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+	<definition extends="default" name="index">
+		<put-attribute name="body" value="/WEB-INF/views/index.jspx" />
+	</definition>
+
+	<definition extends="default" name="dataAccessFailure">
+		<put-attribute name="body" value="/WEB-INF/views/dataAccessFailure.jspx" />
+	</definition>
+
+	<definition extends="default" name="dataConcurrencyFailure">
+		<put-attribute name="body" value="/WEB-INF/views/dataConcurrencyFailure.jspx" />
+	</definition>
+
+	<definition extends="default" name="dataIntegrityViolation">
+		<put-attribute name="body" value="/WEB-INF/views/dataIntegrityViolation.jspx" />
+	</definition>
+
+	<definition extends="default" name="resourceNotFound">
+		<put-attribute name="body" value="/WEB-INF/views/resourceNotFound.jspx" />
+	</definition>
+
+	<definition extends="default" name="uncaughtException">
+		<put-attribute name="body" value="/WEB-INF/views/uncaughtException.jspx" />
+	</definition>
+
+	<definition extends="default" name="deleteEntityInUse">
+		<put-attribute name="body" value="/WEB-INF/views/deleteEntityInUse.jspx" />
+	</definition>
+
+	<definition extends="public" name="login">
+		<put-attribute name="body" value="/WEB-INF/views/login.jspx" />
+	</definition>
+
+	<definition extends="public" name="sessionTimeout">
+		<put-attribute name="body" value="/WEB-INF/views/sessionTimeout.jspx" />
+	</definition>
+
+	<definition extends="default" name="changePassword">
+		<put-attribute name="body" value="/WEB-INF/views/changePassword.jspx" />
+	</definition>
+
+	<definition extends="default" name="resetPassword">
+		<put-attribute name="body" value="/WEB-INF/views/resetPassword.jspx" />
+	</definition>
+
+	<definition extends="default" name="passwordChanged">
+		<put-attribute name="body" value="/WEB-INF/views/passwordChanged.jspx" />
+	</definition>
+
+	<definition extends="public" name="forgotPassword">
+		<put-attribute name="body" value="/WEB-INF/views/forgotPassword.jspx" />
+	</definition>
+
+	<definition extends="public" name="forgotPlayer">
+		<put-attribute name="body" value="/WEB-INF/views/forgotPlayer.jspx" />
+	</definition>
+
+	<definition extends="default" name="accessDenied">
+		<put-attribute name="body" value="/WEB-INF/views/accessDenied.jspx" />
+	</definition>
+
+</tiles-definitions>

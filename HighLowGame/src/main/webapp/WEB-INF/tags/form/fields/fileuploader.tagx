@@ -1,0 +1,80 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+	<jsp:output omit-xml-declaration="yes" />
+
+	<jsp:directive.attribute name="uploadLink" type="java.lang.String" required="true" rtexprvalue="true" description="Upload link for new files" />
+	<jsp:directive.attribute name="addBreak" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if a line break should be added after the input (default 'true')" />
+	<jsp:directive.attribute name="resizeUploadToHeight" type="java.lang.Integer" required="false" rtexprvalue="true" description="" />
+	<jsp:directive.attribute name="resizeUploadToWidth" type="java.lang.Integer" required="false" rtexprvalue="true" description="" />
+
+	<spring:message code="file_upload_link_text" var="fileUploadLink" htmlEscape="false" />
+	<div style="margin-left: 7px; margin-top: 3px">
+		<span><a id="uploadotherfiles" class="strongLink" href="#">${fileUploadLink}</a></span>
+	</div>
+
+	<c:if test="${addBreak}">
+		<br />
+	</c:if>
+
+	<c:if test="${empty resizeUploadToHeight}">
+		<c:set value="600" var="resizeUploadToHeight" />
+	</c:if>
+
+	<c:if test="${empty resizeUploadToWidth}">
+		<c:set value="600" var="resizeUploadToWidth" />
+	</c:if>
+
+	<spring:message code="file_upload_completed" var="fileUploadCompleted" htmlEscape="false" javaScriptEscape="true"/>
+	<spring:message code="file_upload_failed" var="fileUploadFailed" htmlEscape="false" javaScriptEscape="true"/>
+	<script type="text/javascript">
+			$(function() {
+				var fileUploadSuccess = true;
+				var fileuploader = new plupload.Uploader(
+						{
+							runtimes : 'gears,html5,flash,silverlight,browserplus,html4',
+							browse_button : 'uploadotherfiles',
+							unique_names : false,
+							multipart : true,
+							file_data_name : 'file',
+							url : '${uploadLink}',
+							resize : {width : ${resizeUploadToWidth}, height : ${resizeUploadToHeight}, quality : 70},
+							flash_swf_url : '/plupload/js/plupload.flash.swf',
+							silverlight_xap_url : '/plupload/js/plupload.silverlight.xap'
+						});
+
+				fileuploader.bind('FileUploaded', function(up, file, info) {
+					if (info.response.indexOf("error") == 0) {
+						ssAlert(info.response.split("|")[1]);
+						file.status = plupload.FAILED;
+						fileUploadSuccess = false;
+					}
+				});
+
+				fileuploader.bind('UploadComplete', function(up, files) {
+					$("html").removeClass('busy');
+					if (fileUploadSuccess)
+						ssAlert('${fileUploadCompleted}');
+					else
+						ssAlert('${fileUploadFailed}');
+					document.location.reload(true);
+				});
+
+				fileuploader.init();
+
+				fileuploader.bind('FilesAdded', function(up, files) {
+					$("html").addClass('busy');
+					fileUploadSuccess = true;
+					fileuploader.start();
+					up.refresh();
+				});
+
+				fileuploader.bind('Error', function(up, err) {
+					$("html").removeClass('busy');
+					ssAlert("Error: " + err.code + ", Message: " + err.message
+							+ (err.file ? ", File: " + err.file.name : ""));
+					up.refresh();
+				});
+
+			});
+		</script>
+
+</jsp:root>

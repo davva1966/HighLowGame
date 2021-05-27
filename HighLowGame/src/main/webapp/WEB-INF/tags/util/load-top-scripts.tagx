@@ -1,0 +1,79 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+
+	<jsp:output omit-xml-declaration="yes" />
+
+	<spring:url value="/resources/dojo/dojo.js" var="dojo_url" />
+	<spring:url value="/resources/spring/Spring.js" var="spring_url" />
+	<spring:url value="/resources/spring/Spring-Dojo.js" var="spring_dojo_url" />
+	<spring:url value="/resources/images/favicon.ico" var="favicon" />
+	<link rel="SHORTCUT ICON" href="${favicon}" />
+
+	<!-- Get the player locale and language from the page context (it was set by Spring MVC's locale resolver) -->
+	<c:set var="playerLocale">
+		<c:set var="plocale">${pageContext.response.locale}</c:set>
+		<c:out value="${fn:replace(plocale, '_', '-')}" default="en" />
+	</c:set>
+	<c:set var="playerLanguage" value="${pageContext.response.locale.language}"/>
+
+	<script type="text/javascript">
+		var djConfig = {parseOnLoad: false, isDebug: false, locale: '${fn:toLowerCase(playerLocale)}'};
+		var playerLanguage = '${playerLanguage}';
+	</script>
+
+	<script src="${dojo_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<script src="${spring_url}" type="text/javascript"><!-- /required for FF3 and Opera --></script>
+	<script src="${spring_dojo_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<script language="JavaScript" type="text/javascript">dojo.require("dojo.parser");</script>
+
+	<!-- install jQuery -->
+	<spring:url value="/resources/scripts/jquery/jquery-3.3.1.min.js" var="jquery_url" />
+	<spring:url value="/resources/scripts/jquery/jquery-ui-1.12.1/jquery-ui.min.js" var="jquery_ui_url" />
+	<spring:url value="/resources/scripts/jquery/jquery-ui-1.12.1/jquery-ui.min.css" var="jquery_ui_css_url" />
+	<script src="${jquery_url}?4" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<script src="${jquery_ui_url}?2" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="${jquery_ui_css_url}?2" />
+
+	<!-- install jQuery cookies -->
+	<spring:url value="/resources/scripts/jquery/plugins/cookies/js.cookie.js" var="js_cookie_url" />
+	<script src="${js_cookie_url}?1" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	
+	<!-- install Impromptu-->
+	<spring:url value="/resources/scripts/jquery/plugins/impromptu-6.2.2/jquery-impromptu.min.js" var="impromptu_url" />
+	<spring:url value="/resources/scripts/jquery/plugins/impromptu-6.2.2/jquery-impromptu.min.css" var="impromptu_css_url" />
+	<script src="${impromptu_url}?1" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="${impromptu_css_url}?1" />
+	
+	<!-- install Select2 -->
+	<spring:url value="/resources/scripts/jquery/plugins/select2/select2.min.js" var="select2_url" />
+	<spring:url value="/resources/scripts/jquery/plugins/select2/i18n/${fn:toLowerCase(playerLanguage)}.js" var="select2_i18n_url" />
+	<spring:url value="/resources/scripts/jquery/plugins/select2/select2.min.css" var="select2_css_url" />
+	<spring:url value="/resources/scripts/jquery/plugins/select2/ss-select2.css" var="ss_select2_css_url" />
+	<script src="${select2_url}?1" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<script src="${select2_i18n_url}?1" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="${select2_css_url}?1" />
+	<link rel="stylesheet" type="text/css" media="screen" href="${ss_select2_css_url}?1" />
+	
+	<!-- install Lightbox gallery viewer 	-->
+	<spring:url value="/resources/scripts/jquery/plugins/lightbox2/css/lightbox.css" var="lightbox_css_url" />
+	<link rel="stylesheet" type="text/css" media="screen" href="${lightbox_css_url}?3" /><!-- required for FF3 and Opera -->
+	
+	<!-- install Smooth Scroll 	-->
+	<spring:url value="/resources/scripts/jquery/plugins/smoothscroll/js/jquery.smoothdivscroll-1.2-min.js" var="smoothscroll_url" />
+	<spring:url value="/resources/scripts/jquery/plugins/smoothscroll/js/jquery.mousewheel.min.js" var="mousewheel_url" />
+	<spring:url value="/resources/scripts/jquery/plugins/smoothscroll/css/smoothDivScroll.css" var="smoothscroll_css_url" />
+	<script src="${smoothscroll_url}?1" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<script src="${mousewheel_url}?1" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="${smoothscroll_css_url}?1" /><!-- required for FF3 and Opera -->
+
+	<!-- install SpeedSolutions script -->
+	<spring:url value="/resources/scripts/speedsolutions.js" var="speedsolutions_url" />
+	<script src="${speedsolutions_url}?7" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	
+	<spring:url value="/resources/dijit/themes/tundra/tundra.css" var="tundra_url" />
+	<link rel="stylesheet" type="text/css" href="${tundra_url}" />
+	
+	<spring:theme code="styleSheet" var="roo_css" />
+	<spring:url value="/${roo_css}" var="roo_css_url" />
+	<link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}?8" />
+
+</jsp:root>

@@ -1,0 +1,106 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:ssutil="http://tagutils" xmlns:sec="http://www.springframework.org/security/tags" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:spring="http://www.springframework.org/tags" xmlns:form="http://www.springframework.org/tags/form" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+	<jsp:directive.tag import="java.util.ArrayList" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The identifier for this tag (do not change!)" />
+	<jsp:directive.attribute name="data" type="java.util.Collection" required="true" rtexprvalue="true" description="The collection to be displayed in the table" />
+	<jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+	<jsp:directive.attribute name="timeZone" type="java.lang.String" required="false" rtexprvalue="true" description="The id of the time zone to use for date / time values if the field is a date or calendar type" />
+
+	<c:if test="${empty render or render}">
+
+		<c:if test="${empty timeZone}">
+			<spring:eval expression="ss_utility.getTimeZoneID()" var="timeZone" />
+		</c:if>
+
+		<c:set var="columnProperties" scope="request" />
+		<c:set var="columnLabels" scope="request" />
+		<c:set var="columnMaxLengths" scope="request" />
+		<c:set var="columnTypes" scope="request" />
+		<c:set var="columnDatePatterns" scope="request" />
+		<c:set var="columnAlignments" scope="request" />
+		<c:set var="columnEscapeValues" scope="request" />
+
+		<jsp:doBody />
+
+		<spring:url value="/resources/images/checkmark.png" var="checkmarkURL" />
+
+		<spring:message var="typeName" code="menu_item_${fn:toLowerCase(fn:split(id,'_')[fn:length(fn:split(id,'_')) - 1])}_new_label" htmlEscape="false" />
+		<c:set var="lengths" value="${fn:split(columnMaxLengths, '&#9999;')}" scope="request" />
+		<c:set var="types" value="${fn:split(columnTypes, '&#9999;')}" scope="request" />
+		<c:set var="patterns" value="${fn:split(columnDatePatterns, '&#9999;')}" scope="request" />
+		<c:set var="alignments" value="${fn:split(columnAlignments, '&#9999;')}" scope="request" />
+		<c:set var="escapeValues" value="${fn:split(columnEscapeValues, '&#9999;')}" scope="request" />
+
+		<spring:eval var="colCounter" expression="0" />
+
+		<table>
+			<thead>
+				<tr>
+					<c:forTokens items="${columnLabels}" delims="${'&#9999;'}" var="columnHeading" varStatus="num">
+						<c:set var="columnAlignment" value="${alignments[num.count-1]}" />
+						<th style="text-align: ${columnAlignment}"><c:out value="${columnHeading}" /> <spring:eval var="colCounter" expression="colCounter  + 1" /></th>
+					</c:forTokens>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${data}" var="item">
+					<tr>
+						<c:forTokens items="${columnProperties}" delims="${'&#9999;'}" var="column" varStatus="num">
+							<c:set var="columnMaxLength" value="${lengths[num.count-1]}" />
+							<c:set var="columnType" value="${types[num.count-1]}" />
+							<c:set var="columnDatePattern" value="${patterns[num.count-1]}" />
+							<c:set var="columnAlignment" value="${alignments[num.count-1]}" />
+							<c:set var="columnEscapeValue" value="${escapeValues[num.count-1]}" />
+							<c:set var="printText" value="true" />
+
+							<td style="text-align: ${columnAlignment}"><c:choose>
+									<c:when test="${columnType eq 'booleanImage'}">
+										<c:set value="${item[column]}" var="booleanValue" />
+										<c:set var="printText" value="false" />
+										<c:if test="${booleanValue}">
+											<img class="listimage" src="${checkmarkURL}" alt="${booleanValue}" />
+										</c:if>
+									</c:when>
+									<c:when test="${columnType eq 'date'}">
+										<fmt:setLocale value="${ss_locale}" scope="session"/>
+										<spring:escapeBody>
+											<fmt:formatDate timeZone="${timeZone}" value="${item[column]}" pattern="${fn:escapeXml(columnDatePattern)}" var="colTxt" />
+										</spring:escapeBody>
+									</c:when>
+									<c:when test="${columnType eq 'calendar'}">
+										<fmt:setLocale value="${ss_locale}" scope="session"/>
+										<spring:escapeBody>
+											<fmt:formatDate timeZone="${timeZone}" value="${item[column].time}" pattern="${fn:escapeXml(columnDatePattern)}" var="colTxt" />
+										</spring:escapeBody>
+									</c:when>
+									<c:otherwise>
+										<c:set var="colTxt">
+											<spring:eval expression="item.${column}" htmlEscape="false" />
+										</c:set>
+									</c:otherwise>
+								</c:choose> 
+								<c:if test="${printText}">
+									<c:if test="${columnMaxLength ge 0}">
+										<c:set value="${fn:substring(colTxt, 0, columnMaxLength)}" var="colTxt" />
+									</c:if>
+									<c:if test="${columnEscapeValue}">
+										<c:out value="${colTxt}" />
+									</c:if>
+									<c:if test="${not columnEscapeValue}">
+										<c:out escapeXml="false" value="${colTxt}" />
+									</c:if>
+								</c:if>
+								</td>
+						</c:forTokens>
+					</tr>
+				</c:forEach>
+			</tbody>
+
+		</table>
+
+
+	</c:if>
+
+</jsp:root>

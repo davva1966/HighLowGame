@@ -1,0 +1,11 @@
+.dropdownwrapper {
+overflow:hidden;
+border-bottom: solid 1px #d3d3d3;
+}
+
+.dropdownwrapper:after {
+content:".";
+display:block;
+clear:both;
+visibility:hidden;
+}

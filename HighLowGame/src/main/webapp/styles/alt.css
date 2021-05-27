@@ -1,0 +1,645 @@
+/* main elements */
+@import url(https://fonts.googleapis.com/css?family=Noto+Sans:regular:bold:italic:bolditalic);
+/* Chinese simplified */
+@import url(https://fonts.googleapis.com/earlyaccess/notosanssc.css);
+/* Chinese traditional */
+@import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
+/* Korean */
+@import url(https://fonts.googleapis.com/earlyaccess/notosanskr.css);
+/* Japanese */
+@import url(https://fonts.googleapis.com/earlyaccess/notosansjp.css);
+/* Devanagari (Hindi) */
+@import url(https://fonts.googleapis.com/earlyaccess/notosansdevanagari.css);
+/* Thai */
+@import url(https://fonts.googleapis.com/earlyaccess/notosansthai.css);
+/* Arabic */
+@import url(https://fonts.googleapis.com/earlyaccess/notonaskharabic.css);
+
+/* main elements */
+html.busy,html.busy * {
+	cursor: wait !important;
+}
+
+body,div,td,input,textarea,keygen,select,button,option {
+	font-family: 'Noto Sans', 'Noto Sans SC', 'Noto Sans TC', 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans Devanagari', 'Noto Sans Thai', 'Noto Naskh Arabic', 'Arial', 'Helvetica', sans-serif !important;
+	font-weight: 400;
+	font-size: 14px;
+	color: #404040;
+}
+
+body {
+	background-color: #fff;
+	text-align: center;
+}
+
+#header {
+	margin-bottom: 1em;
+}
+
+.subheader {
+	font-size: 1.7em;
+	font-style: italic;
+	margin-left: 5px;
+	margin-top: 0px;
+}
+
+.producttitle {
+	font-size: 1.3em;
+	font-style: bold;
+	margin-left: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.productprice {
+	color: black;
+}
+
+.productdescription {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.switchsubbutton {
+	color: white;
+	background-color: #038BD9;
+	font-size: 14px;
+	border-radius: 5px;
+	font-weight: bold;
+	width: 120px;
+	height: 35px;
+	background-color: #038BD9;
+	border-radius: 5px;
+	font-weight: bold;
+	width: 120px;
+}
+
+.switchsubbutton.pressed {
+	background-color: background-image: #026198;
+}
+
+#wrapper {
+	width: auto;
+	min-width: 800px;
+	/*max-width: 1200px;*/
+	margin-right: auto;
+	margin-left: auto;
+	/* fix max-width incompatibility in IE6 */
+	width: expression(document.body.clientWidth > 800 ? "800px" : "auto");
+	overflow: hidden;
+	display: block;
+}
+
+/* header and footer elements */
+#main {
+	overflow: hidden;
+	display: box;
+}
+
+#menu {
+	position: relative;
+	float: right;
+	left: 0px;
+	width: 245px;
+	margin-left: 15px;
+}
+
+#menu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#menu ul li {
+	padding: 0px;
+}
+
+#menu a,#menu h2 {
+	display: block;
+	margin: 0;
+	padding: 2px 6px;
+	color: #FFFFFF;
+}
+
+#menu h2 {
+	color: #2E2D2D;
+	background: #BEC8D2;
+	font-size: 13px;
+	padding-left: 25px;
+	min-height: 25px;
+	line-height: 25px;
+}
+
+#menu h2.quote {
+	background-image: url('../images/backgrounds/quote_gradient.jpg');
+}
+
+#menu h2.invoice {
+	background-image: url('../images/backgrounds/invoice_gradient.jpg');
+}
+
+#menu h2.customer {
+	background-image: url('../images/backgrounds/customer_gradient.jpg');
+}
+
+#menu h2.item {
+	background-image: url('../images/backgrounds/item_gradient.jpg');
+}
+
+#menu h2.unit {
+	background-image: url('../images/backgrounds/unit_gradient.jpg');
+}
+
+#menu h2.other {
+	background-image: url('../images/backgrounds/other_gradient.jpg');
+}
+
+#menu a {
+	color: #666666;
+	background: #d8e5ff;
+	text-decoration: none;
+	padding: 2px 12px;
+}
+
+#menu a:hover {
+	color: #FF6321;
+	background: #fff;
+}
+
+.submenuheading {
+	padding-left: 5px;
+	font-weight: bold;
+	background: #d8e5ff;
+}
+
+#footer {
+	background: #fff;
+	border: none;
+	margin-top: 15px;
+	border-top: 1px solid #999999;
+}
+
+#footer .new {
+	float: left;
+}
+
+#footer a:link {
+	color: #666666;
+}
+
+#footer a:hover {
+	color: #FF6321;
+}
+
+.quicklinks {
+	clear: both;
+	padding-bottom: 15px
+}
+
+.quicklinks span {
+	float: right;
+}
+
+.selectionlinks {
+	clear: both;
+	padding-bottom: 15px;
+	padding-top: 15px;
+}
+
+.selectionlinks span {
+	float: left;
+}
+
+a.strongLink:link {
+	color: #0000FF;
+	padding-bottom: 3px;
+}
+
+label {
+	width: 20%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	float: left;
+	margin-left: 5px;
+	margin-riht: 5px;
+	margin-top: 0px;
+}
+
+input {
+	height: 20px;
+}
+
+input.small {
+	height: 15px;
+}
+
+select {
+	width: 500px;
+}
+
+input,textarea,select {
+	border: 1px solid #B3B3B3;
+}
+
+input.image {
+	border: none;
+	height: auto;
+	vertical-align: middle;
+}
+
+.listimage {
+	display: block;
+	margin-left: auto;
+	margin-right: auto
+}
+
+.thumbnail {
+	display: block;
+	margin-left: auto;
+	margin-right: auto
+}
+
+submit {
+	height: 25px;
+}
+
+div {
+	text-align: left;
+}
+
+div .box {
+	display: block;
+	margin-left: 105px;
+}
+
+div .rightalignbox {
+	display: inline-block;
+	text-align: right;
+	width: 100px;
+}
+
+/* menu elements*/
+a.menu,a.menu:link,a.menu:visited {
+	display: block;
+	width: 150px;
+	height: 25px;
+}
+
+/* text styles */
+h1,h2,h3 {
+	font-family: Helvetica, sans-serif;
+	color: #7db223;
+}
+
+h1 {
+	font-size: 20px;
+	line-height: 26px;
+}
+
+h2 {
+	font-size: 18px;
+	line-height: 20px;
+}
+
+h3 {
+	font-size: 15px;
+	line-height: 21px;
+	color: #555;
+}
+
+h4 {
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.errors {
+	color: red;
+	font-weight: bold;
+	display: block;
+	margin-left: 5px;
+}
+
+.messages {
+	color: #CC6600;
+	font-weight: bold;
+	display: block;
+	margin-left: 5px;
+}
+
+a {
+	text-decoration: underline;
+	font-size: 13px;
+}
+
+a img {
+	border: 0 none;
+	vertical-align: middle;
+}
+
+tr:nth-child(odd) {
+	background-color: #FFFFFF;
+}
+
+tr:nth-child(even) {
+	background-color: #D8E5FF;
+}
+
+a:link {
+	color: #666666;
+}
+
+a:visited {
+	color: #666666;
+}
+
+a:visited:hover {
+	color: #FF6321;
+}
+
+a:hover {
+	color: #FF6321;
+}
+
+a:active {
+	color: #FF6321;
+}
+
+li {
+	padding-top: 5px;
+	text-align: left;
+}
+
+ul li {
+	margin: 0 0 0.25em 0;
+	padding: 0;
+}
+/* table elements */
+table {
+	background: #EEEEEE;
+	margin: 2px 0 0 0;
+	border: 1px solid #BBBBBB;
+	border-collapse: collapse;
+	width: 100%
+}
+
+table table {
+	margin: -5px 0;
+	border: 0px solid #e0e7d3;
+	width: 100%;
+}
+
+table td,table th {
+	padding: 2px;
+	border: 1px solid #CCCCCC;
+}
+
+table td form {
+	text-align: center;
+	vertical-align: middle;
+	margin: 0px;
+}
+
+table th {
+	font-size: 0.9em;
+	text-align: left;
+	font-weight: bold;
+	color: #FFF;
+	background: #B8C8DC;
+}
+
+table thead { //
+	font-weight: bold; //
+	font-style: italic; //
+	background-color: #6497CA;
+}
+
+table a:link {
+	color: #303030;
+}
+
+.utilbox {
+	width: 18px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+caption {
+	caption-side: top;
+	width: auto;
+	text-align: left;
+	font-size: 12px;
+	color: #848f73;
+	padding-bottom: 4px;
+}
+
+fieldset {
+	background: #e0e7d3;
+	padding: 8px;
+	padding-bottom: 22px;
+	border: none;
+	width: 560px;
+}
+
+fieldset label {
+	width: 70px;
+	float: left;
+	margin-top: 1.7em;
+	margin-left: 20px;
+}
+
+fieldset textfield {
+	margin: 3px;
+	height: 20px;
+	background: #e0e7d3;
+}
+
+fieldset textarea {
+	margin: 3px;
+	height: 165px;
+	background: #e0e7d3;
+}
+
+fieldset input {
+	margin: 3px;
+	height: 20px;
+	background: #e0e7d3;
+}
+
+fieldset table {
+	width: 100%;
+}
+
+fieldset th {
+	padding-left: 25px;
+}
+
+.table-buttons {
+	background-color: #fff;
+	border: none;
+}
+
+.table-buttons td {
+	border: none;
+}
+
+.submit input {
+	border: 1px solid #BBBBBB;
+	color: #777777;
+	padding: 2px 7px;
+	font-size: 11px;
+	text-transform: uppercase;
+	font-weight: bold;
+	height: 24px;
+}
+
+.updated {
+	background: #ecf1e5;
+	font-size: 11px;
+	margin-left: 2px;
+	border: 4px solid #ecf1e5;
+}
+
+.updated td {
+	padding: 2px 8px;
+	font-size: 11px;
+	color: #888888;
+}
+
+.dijitArrowButton {
+	height: 20px;
+}
+
+.dijitTextBox {
+	width: 30%;
+}
+
+.dijitDateTextBox {
+	width: 30%;
+}
+
+.dijitTextArea {
+	min-height: 5.5em !important;
+	max-height: 22em !important;
+	overflow-y: auto !important;
+	width: 49%;
+	max-width: 98%;
+}
+
+.dijitTextArea[cols] {
+	width: 49%;
+}
+
+.RichTextEditable {
+	min-height: 18em !important;
+	max-height: 18em !important;
+}
+
+.flag {
+	height: 11px;
+	width: 16px;
+}
+
+#smoothscrollable {
+	height: 80px;
+	position: relative;
+	border: solid 1px #ccc;
+}
+
+div.scrollingHotSpotLeft,div.scrollingHotSpotRight {
+	width: 25px;
+	min-width: 255px;
+}
+
+#smoothscrollable div.scrollableArea * {
+	position: relative;
+	display: block;
+	float: left;
+	padding: 2px;
+	margin: 0;
+}
+
+.tundra .dijitTitlePaneTitle {
+	background: #6497CA;
+}
+
+.quoteBackground .dijitTitlePaneTitle {
+	background: none;
+	background-image: url('../images/backgrounds/quote_gradient.jpg');
+}
+
+.invoiceBackground .dijitTitlePaneTitle {
+	background: none;
+	background-image: url('../images/backgrounds/invoice_gradient.jpg');
+}
+
+.customerBackground .dijitTitlePaneTitle {
+	background: none;
+	background-image: url('../images/backgrounds/customer_gradient.jpg');
+}
+
+.itemBackground .dijitTitlePaneTitle {
+	background: none;
+	background-image: url('../images/backgrounds/item_gradient.jpg');
+}
+
+.unitBackground .dijitTitlePaneTitle {
+	background: none;
+	background-image: url('../images/backgrounds/unit_gradient.jpg');
+}
+
+.otherBackground .dijitTitlePaneTitle {
+	background: none;
+	background-image: url('../images/backgrounds/other_gradient.jpg');
+}
+
+.standardBackground .dijitTitlePaneTitle {
+	background: #8899b0;
+	background-image: none;
+}
+
+.toggleInputDiv .tundra .dijitTitlePaneTitle {
+	background: none;
+}
+
+.toggleInputDiv .dijitTitlePaneTitle {
+	background: none;
+	border: none;
+	padding: none;
+}
+
+.toggleInputDiv .dijitTitlePaneContentOuter {
+	border-style: none;
+}
+
+.toggleInputDiv .dijitTitlePaneContentInner {
+	padding: 0px;
+}
+
+.toggleInputDiv .dijitTitlePaneTitle * {
+	color: #666;
+}
+
+.linkDiv {
+	padding-bottom: 5px;
+}
+
+#menu .toggleInputDiv h2 {
+	background: none repeat scroll 0 0 #BEC8D2;
+	color: #2E2D2D;
+	font-size: 12px;
+	font-weight: bold;
+	padding-left: 55px;
+	text-transform: lowercase;
+}
+
+.dijitTitlePaneTitle * {
+	color: #FFFFFF;
+}
+
+/*
+div[id*="actionSelect"] .ui-multiselect {
+	background-image: url('../images/backgrounds/select_gradient.jpg');
+	color: #FFFFFF; 
+}
+*/

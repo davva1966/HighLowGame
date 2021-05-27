@@ -1,0 +1,16 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+	<jsp:output omit-xml-declaration="yes" />
+
+	<jsp:directive.attribute name="errors" type="java.util.Collection" required="true" rtexprvalue="true" description="The form backing object name" />
+
+	<c:if test="${not empty errors}">
+		<div class="errors">
+			<c:forEach items="${errors}" var="message" varStatus="reportsRow">
+				<p>
+					<spring:message code="${message.code}" arguments="${message.args}" htmlEscape="false" />
+				</p>
+			</c:forEach>
+		</div>
+	</c:if>
+</jsp:root>
