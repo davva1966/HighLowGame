@@ -87,6 +87,8 @@
 	</bean>
 
 	<bean name="awsEmailAsyncResponseHandler" class="au.com.highlowgame.util.AWSEmailAsyncResponseHandler" scope="prototype" />
+	
+	<bean id="systemInitializer" class="au.com.highlowgame.util.SystemInitializer" />
 
 	<bean id="beanProvider" class="au.com.highlowgame.util.SpringBeanProvider" />
 	<bean id="redirectHelper" class="au.com.highlowgame.util.RedirectHelperImpl" />

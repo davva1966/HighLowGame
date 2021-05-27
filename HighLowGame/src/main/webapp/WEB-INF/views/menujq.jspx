@@ -37,17 +37,18 @@
 				</menu:category>
 			</sec:authorize>
 
-		<menu:category id="c_settings">
-
-				<menu:item id="i_myplayerinfo_edit" url="/players/myinfo?form" />
-				<menu:item id="i_myplayerinfo_changepassword" url="/changePassword?form" />
-
-				<sec:authorize access="hasSSAuthority('ADMIN')">
-					<menu:item id="i_player_list" />
+			<sec:authorize access="hasSSAuthority('ADMIN')">
+				<menu:category id="c_players">
 					<menu:item id="i_player_new" messageCode="global_menu_new" url="/players?form" />
 					<menu:item id="i_player_list" messageCode="global_menu_list" url="/players?page=1&amp;size=${empty param.size ? 50 : param.size}" />
 					<menu:item id="i_player_resetpassword" messageCode="menu_item_player_resetpassword" url="/resetPassword?form" />
-				</sec:authorize>
+				</menu:category>
+			</sec:authorize>
+
+			<menu:category id="c_settings">
+
+				<menu:item id="i_myplayerinfo_edit" url="/players/myinfo?form" />
+				<menu:item id="i_myplayerinfo_changepassword" url="/changePassword?form" />
 
 			</menu:category>
 
