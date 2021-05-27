@@ -38,72 +38,10 @@
 
 		<intercept-url pattern="/resetPassword*" access="hasSSAuthority('ADMIN')" />
 
-		<intercept-url pattern="/approles/**" method="GET" access="hasSSAnyAuthority('VIEW_APPROLE', 'MAINTAIN_APPROLE')" />
-		<intercept-url pattern="/approles/**" access="hasSSAuthority('MAINTAIN_APPROLE')" />
-
-		<intercept-url pattern="/players/myinfo*" access="hasSSAuthority('UPDATE_MYINFO')" />
+		<intercept-url pattern="/players/showAvatar/*" access="isAuthenticated()" />
+		<intercept-url pattern="/players/myinfo*" access="isAuthenticated()" />
 		<intercept-url pattern="/players/**" method="GET" access="hasSSAuthority('ADMIN')" />
 		<intercept-url pattern="/players/**" access="hasSSAuthority('ADMIN')" />
-
-		<intercept-url pattern="/addresses/**" method="GET" access="hasSSAnyAuthority('VIEW_ADDRESS', 'MAINTAIN_ADDRESS')" />
-		<intercept-url pattern="/addresses/**" access="hasSSAuthority('MAINTAIN_ADDRESS')" />
-
-		<intercept-url pattern="/globalsettings/**" method="GET" access="hasSSAnyAuthority('VIEW_GLOBALSETTING', 'MAINTAIN_GLOBALSETTING')" />
-		<intercept-url pattern="/globalsettings/**" access="hasSSAuthority('MAINTAIN_GLOBALSETTING')" />
-
-		<intercept-url pattern="/tenants/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANT', 'MAINTAIN_TENANT')" />
-		<intercept-url pattern="/tenants/**" access="hasSSAuthority('MAINTAIN_TENANT')" />
-		
-		<intercept-url pattern="/archivedtenants/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANT', 'MAINTAIN_TENANT')" />
-		<intercept-url pattern="/archivedtenants/**" access="hasSSAuthority('MAINTAIN_TENANT')" />
-
-		<intercept-url pattern="/tenantproducts/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANTPRODUCT', 'MAINTAIN_TENANTPRODUCT')" />
-		<intercept-url pattern="/tenantproducts/**" access="hasSSAuthority('MAINTAIN_TENANTPRODUCT')" />
-		
-		<intercept-url pattern="/archivedtenantproducts/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANT', 'MAINTAIN_TENANT')" />
-		<intercept-url pattern="/archivedtenantproducts/**" access="hasSSAuthority('MAINTAIN_TENANT')" />
-
-		<intercept-url pattern="/tenantevents/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANTEVENT', 'MAINTAIN_TENANTEVENT')" />
-		<intercept-url pattern="/tenantevents/**" access="hasSSAuthority('MAINTAIN_TENANTEVENT')" />
-		
-		<intercept-url pattern="/archivedtenantevents/**" method="GET" access="hasSSAnyAuthority('VIEW_TENANTEVENT', 'MAINTAIN_TENANTEVENT')" />
-		<intercept-url pattern="/archivedtenantevents/**" access="hasSSAuthority('MAINTAIN_TENANTEVENT')" />
-
-		<intercept-url pattern="/countryinstances/**" method="GET" access="hasSSAnyAuthority('VIEW_COUNTRYINSTANCE', 'MAINTAIN_COUNTRYINSTANCE')" />
-		<intercept-url pattern="/countryinstances/**" access="hasSSAuthority('MAINTAIN_COUNTRYINSTANCE')" />
-
-		<intercept-url pattern="/countrypricetiers/**" method="GET" access="hasSSAnyAuthority('VIEW_COUNTRYPRICETIER', 'MAINTAIN_COUNTRYPRICETIER')" />
-		<intercept-url pattern="/countrypricetiers/**" access="hasSSAuthority('MAINTAIN_COUNTRYPRICETIER')" />
-
-		<intercept-url pattern="/setupgstrates/**" method="GET" access="hasSSAnyAuthority('VIEW_SETUPGSTRATE', 'MAINTAIN_SETUPGSTRATE')" />
-		<intercept-url pattern="/setupgstrates/**" access="hasSSAuthority('MAINTAIN_SETUPGSTRATE')" />
-
-		<intercept-url pattern="/setupunits/**" method="GET" access="hasSSAnyAuthority('VIEW_SETUPUNIT', 'MAINTAIN_SETUPUNIT')" />
-		<intercept-url pattern="/setupunits/**" access="hasSSAuthority('MAINTAIN_SETUPUNIT')" />
-
-		<intercept-url pattern="/languages/**" method="GET" access="hasSSAnyAuthority('VIEW_LANGUAGE', 'MAINTAIN_LANGUAGE')" />
-		<intercept-url pattern="/languages/**" access="hasSSAuthority('MAINTAIN_LANGUAGE')" />
-
-		<intercept-url pattern="/settingategories/**" method="GET" access="hasSSAnyAuthority('VIEW_SETTINGCATEGORY', 'MAINTAIN_SETTINGCATEGORY')" />
-		<intercept-url pattern="/settingategories/**" access="hasSSAuthority('MAINTAIN_SETTINGCATEGORY')" />
-
-		<intercept-url pattern="/products/**" method="GET" access="hasSSAnyAuthority('VIEW_PRODUCT', 'MAINTAIN_PRODUCT')" />
-		<intercept-url pattern="/products/**" access="hasSSAuthority('MAINTAIN_PRODUCT')" />
-
-		<intercept-url pattern="/productinfos/**" method="GET" access="hasSSAnyAuthority('VIEW_PRODUCT', 'MAINTAIN_PRODUCT')" />
-		<intercept-url pattern="/productinfos/**" access="hasSSAuthority('MAINTAIN_PRODUCT')" />
-
-		<intercept-url pattern="/producttypes/**" method="GET" access="hasSSAnyAuthority('VIEW_PRODUCTTYPE', 'MAINTAIN_PRODUCTTYPE')" />
-		<intercept-url pattern="/producttypes/**" access="hasSSAuthority('MAINTAIN_PRODUCTTYPE')" />
-
-		<intercept-url pattern="/producttypeproperties/**" method="GET" access="hasSSAnyAuthority('VIEW_PRODUCTTYPEPROPERTY', 'MAINTAIN_PRODUCTTYPEPROPERTY')" />
-		<intercept-url pattern="/producttypeproperties/**" access="hasSSAuthority('MAINTAIN_PRODUCTTYPEPROPERTY')" />
-
-		<intercept-url pattern="/applications/**" method="GET" access="hasSSAnyAuthority('VIEW_APPLICATION', 'MAINTAIN_APPLICATION')" />
-		<intercept-url pattern="/applications/**" access="hasSSAuthority('MAINTAIN_APPLICATION')" />
-
-		<intercept-url pattern="/documentbackgroundimages/**" method="GET" access="hasSSAnyAuthority('VIEW_DOCUMENTBACKGROUNDIMAGE', 'MAINTAIN_DOCUMENTBACKGROUNDIMAGE')" />
-		<intercept-url pattern="/documentbackgroundimages/**" access="hasSSAuthority('MAINTAIN_DOCUMENTBACKGROUNDIMAGE')" />
 
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 

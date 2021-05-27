@@ -129,7 +129,6 @@
 			}
 			
 			Spring.addDecoration(new Spring.ElementDecoration({elementId : 'rememberUser', widgetType : 'dijit.form.CheckBox', widgetAttrs : {}}));
-			Spring.addDecoration(new Spring.ElementDecoration({elementId : 'j_remember', widgetType : 'dijit.form.CheckBox', widgetAttrs : {}}));
 			
 			$(window).bind('beforeunload', function(){
 				  setCookies();

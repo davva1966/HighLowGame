@@ -54,28 +54,37 @@ public class PlayerController {
 		return "players/create";
 	}
 
-	// @RequestMapping(value = "/myinfo", method = RequestMethod.PUT, produces = "text/html")
-	// public String myinfo(@Valid Player player, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-	// if (bindingResult.hasErrors()) {
-	// populateEditForm(uiModel, player);
-	// return "players/myinfo";
-	// }
-	// uiModel.asMap().clear();
-	// player.merge();
-	// return "index";
-	// }
-	//
-	// @RequestMapping(value = "/myinfo", params = "form", produces = "text/html")
-	// public String myinfoForm(Model uiModel) {
-	// populateEditForm(uiModel, Player.findPlayer(UserContextService.getCurrentPlayer().getId()));
-	// return "players/myinfo";
-	// }
+	@RequestMapping(value = "/myinfo", method = RequestMethod.POST, produces = "text/html")
+	public String myinfoPost(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
+		return myinfo(player, bindingResult, uiModel, imageContent, httpServletRequest);
+	}
+
+	@RequestMapping(value = "/myinfo", method = RequestMethod.PUT, produces = "text/html")
+	public String myinfo(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
+		if (bindingResult.hasErrors()) {
+			populateEditForm(uiModel, player);
+			return "players/myinfo";
+		}
+
+		if (imageContent != null && imageContent.getSize() > 0)
+			updateAvatarFromContent(player, imageContent);
+
+		uiModel.asMap().clear();
+		player.merge();
+		return "index";
+	}
+
+	@RequestMapping(value = "/myinfo", params = "form", produces = "text/html")
+	public String myinfoForm(Model uiModel) {
+		populateEditForm(uiModel, Player.find(UserContextService.getCurrentPlayer().getId()));
+		return "players/myinfo";
+	}
 
 	void populateEditForm(Model uiModel, Player player) {
 		uiModel.addAttribute("player", player);
 		addDateTimeFormatPatterns(uiModel);
 	}
-	
+
 	@RequestMapping(value = "update", method = RequestMethod.POST, produces = "text/html")
 	public String updatePost(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
 		return update(player, bindingResult, uiModel, imageContent, httpServletRequest);
@@ -87,10 +96,10 @@ public class PlayerController {
 			populateEditForm(uiModel, player);
 			return "players/update";
 		}
-		
+
 		if (imageContent != null && imageContent.getSize() > 0)
 			updateAvatarFromContent(player, imageContent);
-		
+
 		uiModel.asMap().clear();
 		player.merge();
 		return "redirect:/players/" + encodeUrlPathSegment(player.getId().toString(), httpServletRequest);

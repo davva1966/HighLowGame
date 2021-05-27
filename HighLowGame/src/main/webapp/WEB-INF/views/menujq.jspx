@@ -37,150 +37,16 @@
 				</menu:category>
 			</sec:authorize>
 
-			<sec:authorize access="hasSSAnyAuthority('VIEW_DOCUMENTBACKGROUNDIMAGE', 'MAINTAIN_DOCUMENTBACKGROUNDIMAGE')">
-				<menu:category id="c_documentbackgroundimage">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_DOCUMENTBACKGROUNDIMAGE')">
-						<menu:item id="i_documentbackgroundimage_new" messageCode="global_menu_new" url="/documentbackgroundimages?form" />
-					</sec:authorize>
-					<menu:item id="i_documentbackgroundimage_list" messageCode="global_menu_list" url="/documentbackgroundimages?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
+		<menu:category id="c_settings">
 
-			<sec:authorize access="hasSSAnyAuthority('VIEW_GLOBALSETTING', 'MAINTAIN_GLOBALSETTING')">
-				<menu:category id="c_globalsetting">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_GLOBALSETTING')">
-						<menu:item id="i_globalsetting_new" messageCode="global_menu_new" url="/globalsettings?form" />
-					</sec:authorize>
-					<menu:item id="i_globalsetting_list" messageCode="global_menu_list" url="/globalsettings?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_COUNTRYINSTANCE', 'MAINTAIN_COUNTRYINSTANCE')">
-				<menu:category id="c_countryinstance">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_COUNTRYINSTANCE')">
-						<menu:item id="i_countryinstance_new" messageCode="global_menu_new" url="/countryinstances?form" />
-					</sec:authorize>
-					<!-- 
-					<menu:item id="i_countryinstance_list" messageCode="global_menu_list" url="/countryinstances?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-					-->
-					<menu:item id="i_countryinstance_list" messageCode="global_menu_list" url="/countryinstances" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_COUNTRYPRICETIER', 'MAINTAIN_COUNTRYPRICETIER')">
-				<menu:category id="c_countrypricetier">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_COUNTRYPRICETIER')">
-						<menu:item id="i_countrypricetier_new" messageCode="global_menu_new" url="/countrypricetiers?form" />
-					</sec:authorize>
-					<!-- 
-					<menu:item id="i_countrypricetier_list" messageCode="global_menu_list" url="/countrypricetiers?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-					 -->
-					<menu:item id="i_countrypricetier_list" messageCode="global_menu_list" url="/countrypricetiers" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_SETUPGSTRATE', 'MAINTAIN_SETUPGSTRATE')">
-				<menu:category id="c_setupGSTRate">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_SETUPGSTRATE')">
-						<menu:item id="i_setupGSTRate_new" messageCode="global_menu_new" url="/setupgstrates?form" />
-					</sec:authorize>
-					<menu:item id="i_setupGSTRate_list" messageCode="global_menu_list" url="/setupgstrates?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_SETUPUNIT', 'MAINTAIN_SETUPUNIT')">
-				<menu:category id="c_setupUnit">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_SETUPUNIT')">
-						<menu:item id="i_setupUnit_new" messageCode="global_menu_new" url="/setupunits?form" />
-					</sec:authorize>
-					<menu:item id="i_setupUnit_list" messageCode="global_menu_list" url="/setupunits?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
-			
-			<sec:authorize access="hasSSAnyAuthority('VIEW_SETUPITEM', 'MAINTAIN_SETUPITEM')">
-				<menu:category id="c_setupItem">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_SETUPITEM')">
-						<menu:item id="i_setupItem_new" messageCode="global_menu_new" url="/setupitems?form" />
-					</sec:authorize>
-					<menu:item id="i_setupItem_list" messageCode="global_menu_list" url="/setupitems?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_LANGUAGE', 'MAINTAIN_LANGUAGE')">
-				<menu:category id="c_language">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_LANGUAGE')">
-						<menu:item id="i_language_new" messageCode="global_menu_new" url="/languages?form" />
-					</sec:authorize>
-					<menu:item id="i_language_list" messageCode="global_menu_list" url="/languages?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_SETTINGCATEGORY', 'MAINTAIN_SETTINGCATEGORY')">
-				<menu:category id="c_settingCategory">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_SETTINGCATEGORY')">
-						<menu:item id="i_settingCategory_new" messageCode="global_menu_new" url="/settingcategories?form" />
-					</sec:authorize>
-					<menu:item id="i_settingCategory_list" messageCode="global_menu_list" url="/settingcategories?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_PRODUCT', 'MAINTAIN_PRODUCT')">
-				<menu:category id="c_product">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_PRODUCT')">
-						<menu:item id="i_product_new" messageCode="global_menu_new" url="/products?form" />
-					</sec:authorize>
-					<menu:item id="i_product_list" messageCode="global_menu_list" url="/products?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-					<menu:item id="fi_product_all" messageCode="menu_item_product_search" url="/products/search?form" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_PRODUCTTYPE', 'MAINTAIN_PRODUCTTYPE')">
-				<menu:category id="c_producttype">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_PRODUCTTYPE')">
-						<menu:item id="i_producttype_new" messageCode="global_menu_new" url="/producttypes?form" />
-					</sec:authorize>
-					<menu:item id="i_producttype_list" messageCode="global_menu_list" url="/producttypes?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
-
-			<sec:authorize access="hasSSAnyAuthority('VIEW_APPLICATION', 'MAINTAIN_APPLICATION')">
-				<menu:category id="c_application">
-					<sec:authorize access="hasSSAuthority('MAINTAIN_APPLICATION')">
-						<menu:item id="i_application_new" messageCode="global_menu_new" url="/applications?form" />
-					</sec:authorize>
-					<menu:item id="i_application_list" messageCode="global_menu_list" url="/applications?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</menu:category>
-			</sec:authorize>
-
-			<menu:category id="c_settings">
-
-				<sec:authorize access="hasSSAuthority('UPDATE_MYINFO')">
-					<menu:item id="i_myplayerinfo" />
-					<menu:item id="i_myplayerinfo_edit" url="/players/myinfo?form" />
-					<menu:item id="i_myplayerinfo_changepassword" url="/changePassword?form" />
-				</sec:authorize>
+				<menu:item id="i_myplayerinfo_edit" url="/players/myinfo?form" />
+				<menu:item id="i_myplayerinfo_changepassword" url="/changePassword?form" />
 
 				<sec:authorize access="hasSSAuthority('ADMIN')">
 					<menu:item id="i_player_list" />
 					<menu:item id="i_player_new" messageCode="global_menu_new" url="/players?form" />
 					<menu:item id="i_player_list" messageCode="global_menu_list" url="/players?page=1&amp;size=${empty param.size ? 50 : param.size}" />
 					<menu:item id="i_player_resetpassword" messageCode="menu_item_player_resetpassword" url="/resetPassword?form" />
-				</sec:authorize>
-
-				<sec:authorize access="hasSSAnyAuthority('VIEW_APPROLE', 'MAINTAIN_APPROLE')">
-					<menu:item id="i_approle_list" />
-					<sec:authorize access="hasSSAuthority('MAINTAIN_APPROLE')">
-						<menu:item id="i_approle_new" messageCode="global_menu_new" url="/approles?form" />
-					</sec:authorize>
-					<menu:item id="i_approle_list" messageCode="global_menu_list" url="/approles?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-				</sec:authorize>
-
-				<sec:authorize access="hasSSAnyAuthority('VIEW_APPPERMISSION', 'MAINTAIN_APPPERMISSION')">
-					<menu:item id="i_apppermission_list" />
-					<sec:authorize access="hasSSAuthority('MAINTAIN_APPPERMISSION')">
-						<menu:item id="i_apppermission_new" messageCode="global_menu_new" url="/apppermissions?form" />
-					</sec:authorize>
-					<menu:item id="i_apppermission_list" messageCode="global_menu_list" url="/apppermissions?page=1&amp;size=${empty param.size ? 50 : param.size}" />
 				</sec:authorize>
 
 			</menu:category>
