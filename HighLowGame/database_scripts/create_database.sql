@@ -80,6 +80,7 @@ CREATE TABLE `game_participant_answer` (
   `game_participant` char(36) NOT NULL,
   `question` char(36) NOT NULL,
   `answer` varchar(300) NOT NULL,
+  `correct` tinyint(1),
   PRIMARY KEY (`id`),
   KEY `fk_game_participant_3` (`game_participant`),
   KEY `fk_question_3` (`question`),

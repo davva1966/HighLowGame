@@ -31,6 +31,9 @@ public class GameParticipantAnswer extends DomainEntity {
 	@NotNull
 	@Size(max = 300)
 	private String answer;
+	
+	@NotNull
+	private boolean correct;
 
 	public GameParticipant getGameParticipant() {
 		return gameParticipant;
@@ -54,6 +57,14 @@ public class GameParticipantAnswer extends DomainEntity {
 
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+	
+	public boolean getCorrect() {
+		return correct;
+	}
+
+	public void setCorrect(boolean correct) {
+		this.correct = correct;
 	}
 
 	@Transactional
