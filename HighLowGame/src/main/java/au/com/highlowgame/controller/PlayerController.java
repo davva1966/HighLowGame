@@ -105,7 +105,7 @@ public class PlayerController {
 		return "redirect:/players/" + encodeUrlPathSegment(player.getId().toString(), httpServletRequest);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
+	@RequestMapping(value = "/create", method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
 		if (bindingResult.hasErrors()) {
 			populateEditForm(uiModel, player);
