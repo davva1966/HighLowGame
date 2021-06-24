@@ -72,7 +72,7 @@ public class ValidationServiceImpl implements ValidationService {
 	}
 
 	public void rejectIfEmptyOrWhitespace(String property, Errors e) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(e, property, "message_com_ss_speedsolutions_required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(e, property, "message_com_ss_highlowgame_required");
 	}
 
 	protected Object getValue(DomainEntity entity, String property) {
@@ -103,7 +103,7 @@ public class ValidationServiceImpl implements ValidationService {
 	}
 
 	protected String buildMessageKey(String property, String messageId) {
-		return ("message_com_ss_speedsolutions_" + property + "_" + messageId).toLowerCase();
+		return ("message_com_ss_highlowgame_" + property + "_" + messageId).toLowerCase();
 	}
 
 	@Override

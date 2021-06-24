@@ -6,9 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +27,7 @@ import au.com.highlowgame.service.ImageService;
 import au.com.highlowgame.service.TranslationService;
 import au.com.highlowgame.user.UserContextService;
 import au.com.highlowgame.util.ApplicationContextProvider;
+import au.com.highlowgame.util.RedirectHelper;
 
 @RequestMapping("/players")
 @Controller
@@ -39,6 +38,9 @@ public class PlayerController {
 
 	@Autowired
 	ImageService imageService;
+
+	@Autowired
+	RedirectHelper redirectHelper;
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -55,12 +57,12 @@ public class PlayerController {
 	}
 
 	@RequestMapping(value = "/myinfo", method = RequestMethod.POST, produces = "text/html")
-	public String myinfoPost(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
-		return myinfo(player, bindingResult, uiModel, imageContent, httpServletRequest);
+	public String myinfoPost(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest request) {
+		return myinfo(player, bindingResult, uiModel, imageContent, request);
 	}
 
 	@RequestMapping(value = "/myinfo", method = RequestMethod.PUT, produces = "text/html")
-	public String myinfo(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
+	public String myinfo(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest request) {
 		if (bindingResult.hasErrors()) {
 			populateEditForm(uiModel, player);
 			return "players/myinfo";
@@ -69,9 +71,21 @@ public class PlayerController {
 		if (imageContent != null && imageContent.getSize() > 0)
 			updateAvatarFromContent(player, imageContent);
 
+		boolean logout = false;
+		Player oldPlayer = Player.find(player.getId());
+		if (oldPlayer != null) {
+			if (oldPlayer.getEmail().equalsIgnoreCase(player.getEmail()) == false)
+				logout = true;
+		}
+
 		uiModel.asMap().clear();
 		player.merge();
-		return "index";
+
+		if (logout) {
+			return redirectHelper.redirectTo("/resources/j_spring_security_logout");
+		} else {
+			return "index";
+		}
 	}
 
 	@RequestMapping(value = "/myinfo", params = "form", produces = "text/html")
@@ -82,16 +96,15 @@ public class PlayerController {
 
 	void populateEditForm(Model uiModel, Player player) {
 		uiModel.addAttribute("player", player);
-		addDateTimeFormatPatterns(uiModel);
 	}
 
 	@RequestMapping(value = "update", method = RequestMethod.POST, produces = "text/html")
-	public String updatePost(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
-		return update(player, bindingResult, uiModel, imageContent, httpServletRequest);
+	public String updatePost(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest request) {
+		return update(player, bindingResult, uiModel, imageContent, request);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
-	public String update(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
+	public String update(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest request) {
 		if (bindingResult.hasErrors()) {
 			populateEditForm(uiModel, player);
 			return "players/update";
@@ -102,11 +115,11 @@ public class PlayerController {
 
 		uiModel.asMap().clear();
 		player.merge();
-		return "redirect:/players/" + encodeUrlPathSegment(player.getId().toString(), httpServletRequest);
+		return "redirect:/players/" + encodeUrlPathSegment(player.getId().toString(), request);
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST, produces = "text/html")
-	public String create(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest httpServletRequest) {
+	public String create(@Valid Player player, BindingResult bindingResult, Model uiModel, @RequestParam(value = "imageContent", required = false) MultipartFile imageContent, HttpServletRequest request) {
 		if (bindingResult.hasErrors()) {
 			populateEditForm(uiModel, player);
 			return "players/create";
@@ -117,12 +130,11 @@ public class PlayerController {
 
 		uiModel.asMap().clear();
 		player.persist();
-		return "redirect:/players/" + encodeUrlPathSegment(player.getId().toString(), httpServletRequest);
+		return "redirect:/players/" + encodeUrlPathSegment(player.getId().toString(), request);
 	}
 
 	@RequestMapping(value = "/{id}", produces = "text/html")
 	public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
-		addDateTimeFormatPatterns(uiModel);
 		uiModel.addAttribute("player", Player.find(id));
 		uiModel.addAttribute("itemId", id);
 		return "players/show";
@@ -139,7 +151,6 @@ public class PlayerController {
 		} else {
 			uiModel.addAttribute("players", Player.findAllPlayers());
 		}
-		addDateTimeFormatPatterns(uiModel);
 		return "players/list";
 	}
 
@@ -150,14 +161,14 @@ public class PlayerController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-	public String delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel, HttpServletRequest httpServletRequest) {
+	public String delete(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel, HttpServletRequest request) {
 		Player player = Player.find(id);
 		if (player != null) {
 
 			if (UserContextService.getCurrentPlayer() != null) {
-				if (player.getId().equals(UserContextService.getCurrentPlayer().getId())) {
-					uiModel.addAttribute("infoMessage", translationService.translate("message_com_ss_speedsolutions_player_cannotdeletecurrentplayer"));
-					return show(id, uiModel, httpServletRequest);
+				if (player.equals(UserContextService.getCurrentPlayer())) {
+					uiModel.addAttribute("infoMessage", translationService.translate("message_com_ss_highlowgame_player_cannotdeletecurrentplayer"));
+					return show(id, uiModel, request);
 				}
 			}
 
@@ -169,13 +180,8 @@ public class PlayerController {
 		return "redirect:/players";
 	}
 
-	void addDateTimeFormatPatterns(Model uiModel) {
-		uiModel.addAttribute("player_lastmodified_date_format", DateTimeFormat.patternForStyle("SM", LocaleContextHolder.getLocale()));
-		uiModel.addAttribute("player_lastlogon_date_format", DateTimeFormat.patternForStyle("SM", LocaleContextHolder.getLocale()));
-	}
-
-	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
-		String enc = httpServletRequest.getCharacterEncoding();
+	String encodeUrlPathSegment(String pathSegment, HttpServletRequest request) {
+		String enc = request.getCharacterEncoding();
 		if (enc == null) {
 			enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
 		}

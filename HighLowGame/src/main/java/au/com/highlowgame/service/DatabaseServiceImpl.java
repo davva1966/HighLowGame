@@ -44,7 +44,7 @@ public class DatabaseServiceImpl implements DatabaseService {
 			return false;
 		} else {
 			DomainEntity existingEntity = (DomainEntity) query.getSingleResult();
-			if (entity.getId() == null || existingEntity.getId().equals(entity.getId()) == false)
+			if (entity.getId() == null || existingEntity.equals(entity) == false)
 				return false;
 		}
 

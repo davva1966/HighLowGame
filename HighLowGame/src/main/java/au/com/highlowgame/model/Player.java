@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import au.com.highlowgame.service.Image;
 import au.com.highlowgame.service.ImageService;
 import au.com.highlowgame.service.SecurityService;
+import au.com.highlowgame.util.SSUtil;
+import au.com.highlowgames.model.util.EntitySearchDescriptor;
 
 @Configurable
 @Entity
@@ -50,11 +52,17 @@ public class Player extends DomainEntity {
 
 	private Long avatarContentSize;
 
-	private boolean admin;
+	@NotNull
+	private boolean admin = false;
+
+	@NotNull
+	private Boolean disabled = false;
 
 	@NotNull
 	@Size(max = 100)
 	private String password;
+
+	private transient boolean selected = false;
 
 	public String getName() {
 		return name;
@@ -104,12 +112,28 @@ public class Player extends DomainEntity {
 		this.admin = admin;
 	}
 
+	public Boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(Boolean disabled) {
+		this.disabled = disabled;
+	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
 	public String getPassword() {
 		return this.password;
+	}
+
+	public boolean getSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 
 	public boolean getHasAvatar() {
@@ -135,16 +159,16 @@ public class Player extends DomainEntity {
 		else
 			return "";
 	}
-	
+
 	public String getAvatarUrl() {
 		if (getHasAvatar())
 			return "/players/showAvatar/" + getId() + "?mediumthumbnail=true&preventCaching=" + System.currentTimeMillis();
 		else
 			return "";
 	}
-	
+
 	public String getLabel() {
-			return getName() + " - " + getEmail();
+		return getName() + " - " + getEmail();
 	}
 
 	@PrePersist
@@ -184,12 +208,55 @@ public class Player extends DomainEntity {
 		return entityManager().createQuery("SELECT o FROM Player o order by o.name", Player.class).getResultList();
 	}
 
+	public static List<Player> findAllPlayersExcept(List<String> playerIds) {
+		if (SSUtil.empty(playerIds))
+			return findAllPlayers();
+
+		EntityManager em = DomainEntity.entityManager();
+		StringBuilder qryBuilder = new StringBuilder();
+		qryBuilder.append("SELECT o FROM Player AS o WHERE o.id not in :playerIds");
+		TypedQuery<Player> q = em.createQuery(qryBuilder.toString(), Player.class);
+		q.setParameter("playerIds", playerIds);
+		return q.getResultList();
+	}
+
 	public static List<Player> findPlayerEntries(int firstResult, int maxResults) {
-		return entityManager().createQuery("SELECT o FROM Player o order by o.name", Player.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+		return findPlayerEntries(firstResult, maxResults, null);
+	}
+
+	public static List<Player> findPlayerEntries(int firstResult, int maxResults, EntitySearchDescriptor searchDescriptor) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT o FROM Player o ");
+		if (searchDescriptor != null && searchDescriptor.hasSearch()) {
+			sb.append("WHERE ");
+			sb.append(searchDescriptor.getQueryString("o"));
+		}
+		sb.append(" order by o.name");
+		TypedQuery<Player> query = entityManager().createQuery(sb.toString(), Player.class);
+		if (searchDescriptor != null)
+			searchDescriptor.setParameters(query);
+		query.setFirstResult(firstResult);
+		query.setMaxResults(maxResults);
+
+		return query.getResultList();
 	}
 
 	public static long countPlayers() {
-		return entityManager().createQuery("SELECT COUNT(o) FROM Player o", Long.class).getSingleResult();
+		return countPlayers(null);
+	}
+
+	public static long countPlayers(EntitySearchDescriptor searchDescriptor) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT COUNT(o) FROM Player o ");
+		if (searchDescriptor != null && searchDescriptor.hasSearch()) {
+			sb.append("WHERE ");
+			sb.append(searchDescriptor.getQueryString("o"));
+		}
+		TypedQuery<Long> query = entityManager().createQuery(sb.toString(), Long.class);
+		if (searchDescriptor != null)
+			searchDescriptor.setParameters(query);
+
+		return query.getSingleResult();
 	}
 
 }

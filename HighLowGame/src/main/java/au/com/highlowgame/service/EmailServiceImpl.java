@@ -5,31 +5,24 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import au.com.highlowgame.util.AWSEmailAsyncResponseHandler;
+import au.com.highlowgame.model.Game;
+import au.com.highlowgame.model.GameParticipant;
+import au.com.highlowgame.util.SSGmailTextEmailMessage;
 import au.com.highlowgame.util.SSUtil;
 import au.com.highlowgame.util.SpringBeanProvider;
-import au.com.highlowgame.util.TextEmailMessage;
 
 public class EmailServiceImpl implements EmailService {
 
 	@Autowired
-	AWSMailSender mailSender;
+	GmailMailSender mailSender;
 
 	@Autowired
 	SpringBeanProvider beanProvider;
 
-	protected String defaultEmailSender;
-
-	public String getDefaultEmailSender() {
-		return defaultEmailSender;
-	}
-
-	public void setDefaultEmailSender(String defaultEmailSender) {
-		this.defaultEmailSender = defaultEmailSender;
-	}
+	@Autowired
+	TranslationService translationService;
 
 	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void sendMail(final String to, final String replyTo, String subject, String text) throws Exception {
 
 		final String finalSubject = subject;
@@ -47,16 +40,34 @@ public class EmailServiceImpl implements EmailService {
 				cleanedEmails.add(email);
 		}
 
-		TextEmailMessage message = TextEmailMessage.create(finalSubject, finalText);
+		SSGmailTextEmailMessage message = new SSGmailTextEmailMessage(finalSubject, finalText);
 
 		message.getTo().addAll(cleanedEmails);
 		message.setReplyTo(replyTo);
-		message.setFromFriendlyName("SpeedInvoice");
+		message.setFromFriendlyName("HighLowGame");
 
-		AWSEmailAsyncResponseHandler asyncHandler = beanProvider.getNewBeanOfType(AWSEmailAsyncResponseHandler.class);
-		asyncHandler.setMessage(message);
+		mailSender.send(message);
 
-		mailSender.sendAsync(message, asyncHandler);
+	}
+
+	@Override
+	public void sendGameInvitation(Game game, GameParticipant participant) throws Exception {
+
+		String joinLink = game.getJoinLinkFor(participant);
+		String declineLink = game.getDeclineLinkFor(participant);
+
+		final String finalSubject = translationService.translate("game_invitation_email_subject");
+		final String finalText = translationService.translate("game_invitation_email_text", joinLink, declineLink);
+
+		// Clean email
+		String cleanedEmail = SSUtil.cleanEmail(participant.getPlayer().getEmail());
+
+		SSGmailTextEmailMessage message = new SSGmailTextEmailMessage(finalSubject, finalText);
+
+		message.getTo().add(cleanedEmail);
+		message.setFromFriendlyName("HighLowGame");
+
+		mailSender.send(message);
 
 	}
 

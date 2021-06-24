@@ -59,7 +59,7 @@
 		</c:set>
 
 		<c:if test="${empty emptyLabel}">
-			<spring:message code="message_com_ss_speedsolutions_dropdownblank" var="emptyLabel" htmlEscape="false" />
+			<spring:message code="message_com_ss_highlowgame_dropdownblank" var="emptyLabel" htmlEscape="false" />
 		</c:if>
 
 		<c:if test="${empty emptyValue}">
@@ -75,7 +75,7 @@
 		</c:if>
 		
 		<c:if test="${empty placeholderCode}">
-			<c:set value="message_com_ss_speedsolutions_please_select" var="placeholderCode" />
+			<c:set value="message_com_ss_highlowgame_please_select" var="placeholderCode" />
 		</c:if>
 		
 		<c:if test="${empty allowClear}">

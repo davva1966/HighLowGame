@@ -18,8 +18,6 @@
 	<!-- HTTP security configurations -->
 
 	<http pattern="/resources/images/**" security="none" />
-	<http pattern="/utility/ping*" security="none" />
-	<http pattern="/aws/**" security="none" />
 	
 	<http-firewall ref="httpFirewall"/>
 	
@@ -40,8 +38,9 @@
 
 		<intercept-url pattern="/players/showAvatar/*" access="isAuthenticated()" />
 		<intercept-url pattern="/players/myinfo*" access="isAuthenticated()" />
-		<intercept-url pattern="/players/**" method="GET" access="hasSSAuthority('ADMIN')" />
 		<intercept-url pattern="/players/**" access="hasSSAuthority('ADMIN')" />
+		
+		<intercept-url pattern="/games/**" access="isAuthenticated()" />
 
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 

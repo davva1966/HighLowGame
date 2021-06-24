@@ -1,8 +1,12 @@
 package au.com.highlowgame.user;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,14 +41,19 @@ public class ExtendedUserDetailsService extends JdbcDaoImpl {
 
 	@Override
 	protected List<GrantedAuthority> loadUserAuthorities(String username) {
-		return getJdbcTemplate().query(this.authoritiesByUsernameQuery, new String[] { username }, (rs, rowNum) -> {
-			boolean isAdmin = rs.getBoolean(1);
-			String role = "USER";
-			if (isAdmin)
-				role = "ADMIN";
-			return new SimpleGrantedAuthority(role);
-		});
+		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 
+		getJdbcTemplate().query(this.authoritiesByUsernameQuery, new RowCallbackHandler() {
+
+			@Override
+			public void processRow(ResultSet rs) throws SQLException {
+				authList.add(new SimpleGrantedAuthority("USER"));
+				if (rs.getBoolean(1))
+					authList.add(new SimpleGrantedAuthority("ADMIN"));
+			}
+		}, username);
+
+		return authList;
 	}
 
 }

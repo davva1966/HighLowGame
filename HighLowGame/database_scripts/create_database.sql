@@ -23,6 +23,7 @@ CREATE TABLE `player` (
   `avatar_content_type` varchar(255) DEFAULT NULL,
   `avatar_content_size` bigint(20) DEFAULT NULL,
   `admin` tinyint(1) DEFAULT 0,
+  `disabled` tinyint(1) DEFAULT 0,
   `password` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
@@ -34,10 +35,21 @@ DROP TABLE IF EXISTS `game`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `game` (
   `id` char(36) NOT NULL,
-  `description` varchar(300) DEFAULT NULL,
+  `owner` char(36) NOT NULL,
+  `description` varchar(2000) DEFAULT NULL,
+  `starting_points` int(11) NOT NULL,
+  `game_type` varchar(255) NOT NULL,
+  `game_leader` char(36),
+  `questions_per_player` int(11),
+  `created` datetime DEFAULT NULL,
   `started` datetime DEFAULT NULL,
   `finished` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `game_status` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_owner_1` (`owner`),
+  KEY `fk_game_leader_1` (`game_leader`),
+  CONSTRAINT `fk_owner_1` FOREIGN KEY (`owner`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_game_leader_1` FOREIGN KEY (`game_leader`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -47,7 +59,7 @@ DROP TABLE IF EXISTS `question`;
 CREATE TABLE `question` (
   `id` char(36) NOT NULL,
   `game` char(36) NOT NULL,
-  `number` int(11),
+  `number` int(11) NOT NULL,
   `question` varchar(2048),
   `correct_answer` varchar(300) NOT NULL,
   PRIMARY KEY (`id`),
@@ -63,6 +75,7 @@ CREATE TABLE `game_participant` (
   `id` char(36) NOT NULL,
   `game` char(36) NOT NULL,
   `player` char(36) NOT NULL,
+  `number` int(11) NOT NULL,
   `points` int(11),
   PRIMARY KEY (`id`),
   KEY `fk_game_2` (`game`),
@@ -79,8 +92,11 @@ CREATE TABLE `game_participant_answer` (
   `id` char(36) NOT NULL,
   `game_participant` char(36) NOT NULL,
   `question` char(36) NOT NULL,
-  `answer` varchar(300) NOT NULL,
+  `answer` varchar(300),
   `correct` tinyint(1),
+  `points_before` int(11),
+  `points_bet` int(11),
+  `points_after` int(11),
   PRIMARY KEY (`id`),
   KEY `fk_game_participant_3` (`game_participant`),
   KEY `fk_question_3` (`question`),

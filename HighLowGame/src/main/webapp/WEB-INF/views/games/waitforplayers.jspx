@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<field:message message="${infoMessage}" />
+	<page:show id="ps_com_ss_highlowgame_model_game" object="${game}" path="/games" create="false" allowUpdateFieldName="allowUpdate" allowDeleteFieldName="allowDelete" permissionName="USER">
+		<field:display field="description" id="s_com_ss_highlowgame_model_game_description" object="${game}" />
+	</page:show>
+	<br />
+	<page:list id="pl_com_ss_highlowgame_model_players" items="${game.participantsByPoints}" labelCode="label_com_ss_highlowgame_model_player_plural" emptyLabelCode="label_no_players_found">
+		<field:table entityName="game_participant" data="${game.participantsByPoints}" id="l_com_ss_highlowgame_model_gameparticipant" path="/gameparticipants" create="false" delete="false" update="false">
+			<field:column id="c_com_ss_highlowgame_model_player_avatar" thumbnail="true" property="avatarThumbnailUrl" />
+			<field:column id="c_com_ss_highlowgame_model_player_name" property="name" />
+		</field:table>
+	</page:list>
+	<br />
+	
+</div>

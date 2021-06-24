@@ -28,7 +28,7 @@ public class ForgotPasswordValidator extends AbstractCompositeValidator {
 			if (e.hasFieldErrors("email"))
 				return;
 			if (forgotCredentialsBean.getPlayer() == null)
-				e.rejectValue("email", "message_com_ss_speedsolutions_forgotcredentials_playerforemailnotfound");
+				e.rejectValue("email", "message_com_ss_highlowgame_forgotcredentials_playerforemailnotfound");
 
 		}
 

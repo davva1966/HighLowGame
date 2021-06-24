@@ -31,7 +31,7 @@
 	<spring:url value="/resources/scripts/jquery/jquery-ui-1.12.1/jquery-ui.min.css" var="jquery_ui_css_url" />
 	<script src="${jquery_url}?4" type="text/javascript"><!-- required for FF3 and Opera --></script>
 	<script src="${jquery_ui_url}?2" type="text/javascript"><!-- required for FF3 and Opera --></script>
-	<link rel="stylesheet" type="text/css" media="screen" href="${jquery_ui_css_url}?2" />
+	<link rel="stylesheet" type="text/css" media="screen" href="${jquery_ui_css_url}?1" />
 
 	<!-- install jQuery cookies -->
 	<spring:url value="/resources/scripts/jquery/plugins/cookies/js.cookie.js" var="js_cookie_url" />
@@ -53,10 +53,7 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="${select2_css_url}?1" />
 	<link rel="stylesheet" type="text/css" media="screen" href="${ss_select2_css_url}?1" />
 	
-	<!-- install Lightbox gallery viewer 	-->
-	<spring:url value="/resources/scripts/jquery/plugins/lightbox2/css/lightbox.css" var="lightbox_css_url" />
-	<link rel="stylesheet" type="text/css" media="screen" href="${lightbox_css_url}?3" /><!-- required for FF3 and Opera -->
-	
+
 	<!-- install Smooth Scroll 	-->
 	<spring:url value="/resources/scripts/jquery/plugins/smoothscroll/js/jquery.smoothdivscroll-1.2-min.js" var="smoothscroll_url" />
 	<spring:url value="/resources/scripts/jquery/plugins/smoothscroll/js/jquery.mousewheel.min.js" var="mousewheel_url" />
@@ -65,15 +62,15 @@
 	<script src="${mousewheel_url}?1" type="text/javascript"><!-- required for FF3 and Opera --></script>
 	<link rel="stylesheet" type="text/css" media="screen" href="${smoothscroll_css_url}?1" /><!-- required for FF3 and Opera -->
 
-	<!-- install SpeedSolutions script -->
-	<spring:url value="/resources/scripts/speedsolutions.js" var="speedsolutions_url" />
-	<script src="${speedsolutions_url}?7" type="text/javascript"><!-- required for FF3 and Opera --></script>
+	<!-- install HighLowGame script -->
+	<spring:url value="/resources/scripts/highlowgame.js" var="highlowgame_url" />
+	<script src="${highlowgame_url}?1" type="text/javascript"><!-- required for FF3 and Opera --></script>
 	
 	<spring:url value="/resources/dijit/themes/tundra/tundra.css" var="tundra_url" />
 	<link rel="stylesheet" type="text/css" href="${tundra_url}" />
 	
 	<spring:theme code="styleSheet" var="roo_css" />
 	<spring:url value="/${roo_css}" var="roo_css_url" />
-	<link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}?8" />
+	<link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}?1" />
 
 </jsp:root>

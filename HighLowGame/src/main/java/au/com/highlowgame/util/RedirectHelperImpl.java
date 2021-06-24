@@ -23,7 +23,7 @@ public class RedirectHelperImpl implements RedirectHelper {
 		String referer = request.getHeader("Referer");
 		try {
 			SSURIBuilder builder = new SSURIBuilder(referer);
-			// builder.addParameter("ssdisplaymessage", translationService.translate("message_com_ss_speedsolutions_entity_deleted", entityName, null));
+			// builder.addParameter("ssdisplaymessage", translationService.translate("message_com_ss_highlowgame_entity_deleted", entityName, null));
 			return "redirect:" + builder.build();
 		} catch (Exception e) {
 			return "redirect:" + referer;

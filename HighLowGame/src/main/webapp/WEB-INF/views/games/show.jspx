@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<field:message message="${infoMessage}" />
+	<page:show id="ps_com_ss_highlowgame_model_game" object="${game}" path="/games" create="false" allowUpdateFieldName="allowUpdate" allowDeleteFieldName="allowDelete" permissionName="USER">
+		<field:display field="description" id="s_com_ss_highlowgame_model_game_description" object="${game}" />
+		<field:display field="startingPoints" id="s_com_ss_highlowgame_model_game_startingpoints" object="${game}" />
+		
+		<field:display addBreak="false" field="gameType.label" id="s_com_ss_highlowgame_model_game_gametype" object="${game}" />
+		<c:if test="${game.hasLeader}">
+			<field:display field="gameLeader.name" id="s_com_ss_highlowgame_model_game_gameleader" object="${game}" />
+		</c:if>
+		<c:if test="${game.hasNoLeader}">
+			<field:display field="questionsPerPlayer" id="s_com_ss_highlowgame_model_game_questionsperplayer" object="${game}" />
+		</c:if>
+		
+		<field:display addBreak="false" date="true" dateTimePattern="${game_created_date_format}" field="created" id="s_com_ss_highlowgame_model_game_created" object="${game}" />
+		<field:display addBreak="false" date="true" dateTimePattern="${game_started_date_format}" field="started" id="s_com_ss_highlowgame_model_game_started" object="${game}" />
+		<field:display date="true" dateTimePattern="${game_finished_date_format}" field="finished" id="s_com_ss_highlowgame_model_game_finished" object="${game}" />
+		<field:display addBreak="false" field="gameStatus.translatedName" id="s_com_ss_highlowgame_model_game_status" object="${game}"/>
+		<field:display field="owner.name" id="s_com_ss_highlowgame_model_game_owner" object="${game}" />
+	</page:show>
+	<br />
+	<page:list id="pl_com_ss_highlowgame_model_players" items="${game.participantsByPoints}" labelCode="label_com_ss_highlowgame_model_player_plural" emptyLabelCode="label_no_players_found">
+		<field:table entityName="game_participant" data="${game.participantsByPoints}" id="l_com_ss_highlowgame_model_gameparticipant" path="/gameparticipants" create="false" delete="false" update="false">
+			<field:column id="c_com_ss_highlowgame_model_player_avatar" thumbnail="true" property="avatarThumbnailUrl" />
+			<field:column id="c_com_ss_highlowgame_model_player_name" property="name" />
+			<field:column id="c_com_ss_highlowgame_model_gameparticipant_points" property="points" />
+		</field:table>
+	</page:list>
+	<br />
+	
+	<!-- 
+	<spring:url value="/resources/styles/report.css" var="report_css_url" />
+	<link rel="stylesheet" type="text/css" media="screen" href="${report_css_url}?1" />
+		
+	<script type="text/javascript">
+		$(document).ready(function () {
+		    $("#report_div").floatingScroll();
+		}); 
+	</script>
+	
+	<div id="report_div" style="overflow: auto;width:100%">${reportHtml}</div>
+	 -->
+
+</div>

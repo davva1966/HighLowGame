@@ -1,7 +1,6 @@
 // NOTE! Don't forget to change the version number in "load-top-scripts.tagx" when changing this file.
 
-rootFolder = location.pathname.substr(0, 15) === '/SpeedSolutions' ? '/SpeedSolutions/'
-		: '/';
+rootFolder = location.pathname.substr(0, 12) === '/HighLowGame' ? '/HighLowGame/' : '/';
 
 jQuery(document)
 		.ready(
@@ -294,29 +293,6 @@ function confirmSubmit(formId, title, message, yesText, noText) {
 				form = $('#' + formId);
 				form.off('submit');
 				form.submit();
-			}
-		}
-	});
-};
-
-function confirmCancelSubscription(link, title, message, yesAtPeriodEndText, yesImmediatelyText, noCancelText) {
-	var buttons = {};
-	if (yesAtPeriodEndText)
-		buttons[yesAtPeriodEndText] = 1;
-	if (yesImmediatelyText)
-		buttons[yesImmediatelyText] = 2;
-	buttons[noCancelText] = 3;
-
-	$.prompt(message, {
-		title : title,
-		buttons : buttons,
-		submit : function(e, v, m, f) {
-			if (v!=3) {
-				if (v==1)
-					link = link + "?cancelType=PeriodEnd";
-				else
-					link = link + "?cancelType=Immediately";
-				window.location.href = link;
 			}
 		}
 	});

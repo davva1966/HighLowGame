@@ -29,13 +29,10 @@
 	<div id="menuaccordion">
 		<menu:menu id="_menu">
 
-			<sec:authorize access="hasSSAnyAuthority('VIEW_TENANT', 'MAINTAIN_TENANT')">
-				<menu:category id="c_tenant">
-					<menu:item id="i_tenant_list" messageCode="global_menu_list" url="/tenants?page=1&amp;size=${empty param.size ? 50 : param.size}" />
-					<menu:item id="fi_tenant_all" messageCode="menu_item_tenant_search" url="/tenants/search?form" />
-					<menu:item id="fi_archivedtenant_all" messageCode="menu_item_archivedtenant_search" url="/archivedtenants/search?form" />
-				</menu:category>
-			</sec:authorize>
+			<menu:category id="c_games">
+				<menu:item id="i_game_new" messageCode="global_menu_new" url="/games?form1" />
+				<menu:item id="i_game_list" messageCode="global_menu_list" url="/games?page=1&amp;size=${empty param.size ? 50 : param.size}" />
+			</menu:category>
 
 			<sec:authorize access="hasSSAuthority('ADMIN')">
 				<menu:category id="c_players">

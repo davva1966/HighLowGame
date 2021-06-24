@@ -1,7 +1,12 @@
 package au.com.highlowgame.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
+import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -72,6 +77,13 @@ public class Question extends DomainEntity {
 		if (id == null || id.length() == 0)
 			return null;
 		return entityManager().find(Question.class, id);
+	}
+
+	public static Set<Question> getForGame(Game game) {
+		EntityManager em = DomainEntity.entityManager();
+		TypedQuery<Question> q = em.createQuery("SELECT o FROM Question AS o WHERE o.game = :game order by o.number", Question.class);
+		q.setParameter("game", game);
+		return new HashSet<Question>(q.getResultList());
 	}
 
 }

@@ -4,19 +4,19 @@
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 	<spring:message code="menu_category_myplayerinfo_label" var="label" htmlEscape="false" />
-	<form:update label="${label}" id="fu_com_ss_speedsolutions_model_player" modelAttribute="player" multipart="true" path="/players/myinfo" versionField="none">
+	<form:update label="${label}" id="fu_com_ss_highlowgame_model_player" modelAttribute="player" multipart="true" path="/players/myinfo" versionField="none">
 		<springform:hidden path="password" />
 		<springform:hidden path="admin" />
 		<springform:hidden path="avatarContent" />
 		<springform:hidden path="avatarContentType" />
 		<springform:hidden path="avatarContentSize" />
 		
-		<field:input field="name" id="c_com_ss_speedsolutions_model_player_name" max="60" required="true"  />
-		<field:input field="email" id="c_com_ss_speedsolutions_model_player_email" max="300" required="true" validationMessageCode="field_invalid_email"  />
+		<field:input field="name" id="c_com_ss_highlowgame_model_player_name" max="60" required="true"  />
+		<field:input field="email" id="c_com_ss_highlowgame_model_player_email" max="300" required="true" validationMessageCode="field_invalid_email"  />
 		
-		<field:image field="avatarUrl" id="s_com_ss_speedsolutions_model_player_avatar" object="${player}" render="${not empty player.avatarUrl}" />
+		<field:image field="avatarUrl" id="s_com_ss_highlowgame_model_player_avatar" object="${player}" render="${not empty player.avatarUrl}" />
 		
 		<spring:message code="label_upload_new_image" htmlEscape="false" var="uploadImageLabel" />
-        <field:file disableFormBinding="true" field="imageContent" id="c_com_ss_speedsolutions_model_player_avatar" label="${uploadImageLabel}" required="false"  />
+        <field:file disableFormBinding="true" field="imageContent" id="c_com_ss_highlowgame_model_player_avatar" label="${uploadImageLabel}" required="false"  />
 	</form:update>
 </div>

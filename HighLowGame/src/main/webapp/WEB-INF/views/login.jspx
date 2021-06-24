@@ -66,7 +66,7 @@
 			<div>
 				<label for="j_password"> <spring:message code="security_login_form_password" htmlEscape="false" />
 				</label> <input id="j_password" type='password' name='j_password' style="width: 300px" />
-				<spring:message code="label_com_ss_speedsolutions_forgotcredentials_forgotpassword" var="forgotpassword_label" htmlEscape="false" />
+				<spring:message code="label_com_ss_highlowgame_forgotcredentials_forgotpassword" var="forgotpassword_label" htmlEscape="false" />
 				<spring:url value="/forgotPassword" var="forgotpassword_url" />
 				<span style="padding-left: 20px"> <a href="${forgotpassword_url}" tabindex="-1"> <c:out value="${forgotpassword_label}" />
 				</a>

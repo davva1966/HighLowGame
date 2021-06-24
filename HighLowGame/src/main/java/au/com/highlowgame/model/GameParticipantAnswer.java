@@ -28,12 +28,16 @@ public class GameParticipantAnswer extends DomainEntity {
 	@OneToOne
 	private Question question;
 
-	@NotNull
 	@Size(max = 300)
 	private String answer;
-	
-	@NotNull
-	private boolean correct;
+
+	private Boolean correct;
+
+	private int pointsBefore;
+
+	private int pointsBet;
+
+	private int pointsAfter;
 
 	public GameParticipant getGameParticipant() {
 		return gameParticipant;
@@ -58,13 +62,37 @@ public class GameParticipantAnswer extends DomainEntity {
 	public void setAnswer(String answer) {
 		this.answer = answer;
 	}
-	
-	public boolean getCorrect() {
+
+	public Boolean getCorrect() {
 		return correct;
 	}
 
-	public void setCorrect(boolean correct) {
+	public void setCorrect(Boolean correct) {
 		this.correct = correct;
+	}
+
+	public int getPointsBefore() {
+		return pointsBefore;
+	}
+
+	public void setPointsBefore(int pointsBefore) {
+		this.pointsBefore = pointsBefore;
+	}
+
+	public int getPointsBet() {
+		return pointsBet;
+	}
+
+	public void setPointsBet(int pointsBet) {
+		this.pointsBet = pointsBet;
+	}
+
+	public int getPointsAfter() {
+		return pointsAfter;
+	}
+
+	public void setPointsAfter(int pointsAfter) {
+		this.pointsAfter = pointsAfter;
 	}
 
 	@Transactional

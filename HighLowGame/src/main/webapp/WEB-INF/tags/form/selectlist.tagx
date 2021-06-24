@@ -31,7 +31,7 @@
 					<c:when test="${not empty items}">
 
 						<c:if test="${not empty selectionItems}">
-							<field:select placeholderCode="${actionListPlaceholderCode}" disableFormBinding="true" renderLabel="false" field="action" id="c_com_ss_speedsolutions_model_tenant" itemLabel="translatedName" items="${selectionItems}" path="" required="false" />
+							<field:select placeholderCode="${actionListPlaceholderCode}" disableFormBinding="true" renderLabel="false" field="action" id="c_com_ss_highlowgame_model_tenant" itemLabel="translatedName" items="${selectionItems}" path="" required="false" />
 							
 							
 							<spring:message code="action_confirm_title" var="confirmTitle" htmlEscape="false" javaScriptEscape="true" />

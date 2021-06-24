@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:fn="http://java.sun.com/jsp/jstl/functions" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<c:set value="${fn:escapeXml(param.page)}" var="page" />
+	<c:set value="${fn:escapeXml(param.size)}" var="size" />
+
+	<page:list id="pl_com_ss_highlowgame_model_game" items="${games}">
+		<table:table data="${games}" id="l_com_ss_highlowgame_model_game" path="/games" allowUpdateFieldName="allowUpdate" allowDeleteFieldName="allowDelete" permissionName="USER">
+			<table:column id="c_com_ss_highlowgame_model_game_description" property="description" />
+			<table:column id="c_com_ss_highlowgame_model_game_owner" property="owner.name" />
+			<table:column id="c_com_ss_highlowgame_model_game_gametype" property="gameType.translatedName" />
+			<table:column id="c_com_ss_highlowgame_model_game_created" property="created" date="true" dateTimePattern="${game_created_date_format}" />
+			<table:column id="c_com_ss_highlowgame_model_game_started" property="started" date="true" dateTimePattern="${game_started_date_format}" />
+			<table:column id="c_com_ss_highlowgame_model_game_finished" property="finished" date="true" dateTimePattern="${game_finished_date_format}" />
+			<table:column id="c_com_ss_highlowgame_model_game_status" property="gameStatus.translatedName" />
+			<table:column id="c_com_ss_highlowgame_model_game_action" label=" " property="getGameActionLinks(${page}, ${size})" maxLength="1024" escapeValue="false" />
+		</table:table>
+	</page:list>
+</div>

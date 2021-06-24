@@ -70,29 +70,20 @@
 	<bean id="securityService" class="au.com.highlowgame.service.SecurityServiceImpl" />
 
 	<bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
-	
-	<bean id="emailService" class="au.com.highlowgame.service.EmailServiceImpl">
-		<property name="defaultEmailSender" value="${highlowgame.defaultEmailSender}" />
-	</bean>
-	
-	<bean id="awsEmailCredentials" class="au.com.highlowgame.util.AWSEmailSenderCredentials">
-		<property name="accessKey" value="${aws.accesskey}" />
-		<property name="secretKey" value="${aws.secretkey}" />
+
+	<bean id="emailService" class="au.com.highlowgame.service.EmailServiceImpl"/>
+
+	<bean id="mailSender" class="au.com.highlowgame.service.GmailMailSender">
+		<property name="username" value="${gmail.username}" />
+		<property name="password" value="${gmail.password}" />
+		<property name="defaultEmailSender" value="${gmail.defaultEmailSender}" />
 	</bean>
 
-	<bean id="mailSender" class="au.com.highlowgame.service.AWSMailSender">
-		<property name="credentials" ref="awsEmailCredentials" />
-		<property name="mailFromAddress" value="${highlowgame.defaultEmailSender}" />
-		<property name="region" value="${aws.emailRegion}" />
-	</bean>
-
-	<bean name="awsEmailAsyncResponseHandler" class="au.com.highlowgame.util.AWSEmailAsyncResponseHandler" scope="prototype" />
-	
 	<bean id="systemInitializer" class="au.com.highlowgame.util.SystemInitializer" />
 
 	<bean id="beanProvider" class="au.com.highlowgame.util.SpringBeanProvider" />
 	<bean id="redirectHelper" class="au.com.highlowgame.util.RedirectHelperImpl" />
-
+	<bean id="reportService" class="au.com.highlowgame.service.DynamicReportsReportService" />
 
 	<bean id="securityManager" class="au.com.highlowgame.util.SecurityManager" scope="singleton" />
 

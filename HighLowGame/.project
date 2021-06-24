@@ -2,9 +2,6 @@
 <projectDescription>
 	<name>HighLowGame</name>
 	<comment></comment>
-	<projects>
-		<project>SpeedUtils</project>
-	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.wst.jsdt.core.javascriptValidator</name>

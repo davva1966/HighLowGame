@@ -42,7 +42,7 @@ public class SecurityServiceImpl implements SecurityService {
 	@Override
 	public boolean isCurrentPlayer(Player currentPlayer) {
 		Player loggedInPlayer = UserContextService.getCurrentPlayer();
-		return (loggedInPlayer.getId().equals(currentPlayer.getId()));
+		return (loggedInPlayer.equals(currentPlayer));
 	}
 
 	@Override

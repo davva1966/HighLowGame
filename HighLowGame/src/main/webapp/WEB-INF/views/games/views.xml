@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<definition extends="default" name="games/list">
+		<put-attribute name="body" value="/WEB-INF/views/games/list.jspx" />
+	</definition>
+	<definition extends="default" name="games/show">
+		<put-attribute name="body" value="/WEB-INF/views/games/show.jspx" />
+	</definition>
+	<definition extends="default" name="games/create1">
+		<put-attribute name="body" value="/WEB-INF/views/games/create1.jspx" />
+	</definition>
+	<definition extends="default" name="games/create2">
+		<put-attribute name="body" value="/WEB-INF/views/games/create2.jspx" />
+	</definition>
+	<definition extends="default" name="games/update1">
+		<put-attribute name="body" value="/WEB-INF/views/games/update1.jspx" />
+	</definition>
+	<definition extends="default" name="games/update2">
+		<put-attribute name="body" value="/WEB-INF/views/games/update2.jspx" />
+	</definition>
+	<definition extends="default" name="games/waitforplayers">
+		<put-attribute name="body" value="/WEB-INF/views/games/waitforplayers.jspx" />
+	</definition>
+</tiles-definitions>

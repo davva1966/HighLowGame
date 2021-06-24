@@ -25,6 +25,7 @@
 	<jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
 	<jsp:directive.attribute name="parentId" type="java.lang.String" required="false" rtexprvalue="true" description="Parent object id" />
 	<jsp:directive.attribute name="addCheckbox" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include a selection checkbox (default 'false')" />
+	<jsp:directive.attribute name="selectedFieldName" type="java.lang.String" required="false" rtexprvalue="true" description="The field name to determine if a row is selected" />
 	<jsp:directive.attribute name="timeZone" type="java.lang.String" required="false" rtexprvalue="true" description="The id of the time zone to use for date / time values if the field is a date or calendar type" />
 	<jsp:directive.attribute name="permissionName" type="java.lang.String" required="false" rtexprvalue="true" description="The name of the required maintain permission" />
 	<jsp:directive.attribute name="entityName" type="java.lang.String" required="false" rtexprvalue="true" description="The name of the entity being listed (used for translation)" />
@@ -105,7 +106,7 @@ tbody tr.clickable:hover td {
 		<c:if test="${empty addCheckbox}">
 			<c:set var="addCheckbox" value="false" />
 		</c:if>
-
+		
 		<c:if test="${create}">
 			<sec:authorize access="!hasSSAnyAuthority('${maint_perm1}', '${maint_perm2}')">
 				<c:set var="create" value="false" />
@@ -157,15 +158,11 @@ tbody tr.clickable:hover td {
 					<c:if test="${not empty parentId}">
 						<spring:param name="parentId" value="${parentId}" />
 					</c:if>
-				</spring:url> 
-				<spring:url value="/resources/images/add.png" var="create_img_url" /> 
-					<c:if test="${not empty entityName}">
-						<spring:message code="label_create_${entityName}" var="add_message" htmlEscape="false" />
-					</c:if> 
-					<c:if test="${empty add_message}">
-						<spring:message arguments="${typeName}" code="global_menu_new" var="add_message" htmlEscape="false" />
-					</c:if> 
-					<a href="${create_url}"> <img alt="${fn:escapeXml(add_message)}" src="${create_img_url}" title="${fn:escapeXml(add_message)}" /></a>
+				</spring:url> <spring:url value="/resources/images/add.png" var="create_img_url" /> <c:if test="${not empty entityName}">
+					<spring:message code="label_create_${entityName}" var="add_message" htmlEscape="false" />
+				</c:if> <c:if test="${empty add_message}">
+					<spring:message arguments="${typeName}" code="global_menu_new" var="add_message" htmlEscape="false" />
+				</c:if> <a href="${create_url}"> <img alt="${fn:escapeXml(add_message)}" src="${create_img_url}" title="${fn:escapeXml(add_message)}" /></a>
 			</span>
 		</c:if>
 
@@ -207,23 +204,39 @@ tbody tr.clickable:hover td {
 				<tbody>
 					<c:forEach items="${data}" var="item">
 						<c:set var="itemId">
-							<!-- <spring:eval expression="item[typeIdFieldName]" /> -->
 							<spring:eval expression="item.${typeIdFieldName}" />
 						</c:set>
+						
+						<c:set var="itemSelected" value="false"/>
+						<c:if test="${not empty selectedFieldName}">
+							<c:set var="itemSelected">
+								<spring:eval expression="item.${selectedFieldName}" />
+							</c:set>
+						</c:if>
 						<spring:url value="${path}/${itemId}" var="show_form_url" />
 						<tr data-href="${show_form_url}">
 							<c:if test="${addCheckbox}">
-								<td class="utilbox"><script type="text/javascript">
-									dojo.require("dijit.form.CheckBox");
-								</script> <input class="small" id="selection_checkbox_${itemId}" name="selection_checkbox_${itemId}" type="checkbox" /> <script type="text/javascript">
-								Spring
-										.addDecoration(new Spring.ElementDecoration(
-												{
-													elementId : 'selection_checkbox_${itemId}',
-													widgetType : 'dijit.form.CheckBox',
-													widgetAttrs : {}
-												}));
-							</script></td>
+									<td class="utilbox"><script type="text/javascript">
+										dojo.require("dijit.form.CheckBox");
+									</script> 
+									
+									<c:if test="${itemSelected}">
+										<input class="small" id="selection_checkbox_${itemId}" name="selection_checkbox_${itemId}" type="checkbox" checked="checked"/>
+									 </c:if>
+									<c:if test="${not itemSelected}">
+										<input class="small" id="selection_checkbox_${itemId}" name="selection_checkbox_${itemId}" type="checkbox" />
+									 </c:if>
+									 
+									<script type="text/javascript">
+									Spring
+											.addDecoration(new Spring.ElementDecoration(
+													{
+														elementId : 'selection_checkbox_${itemId}',
+														widgetType : 'dijit.form.CheckBox',
+														widgetAttrs : {}
+													}));
+									</script>
+									</td>
 							</c:if>
 							<c:forTokens items="${columnProperties}" delims="${'&#9999;'}" var="column" varStatus="num">
 								<c:set var="columnMaxLength" value="${lengths[num.count-1]}" />
@@ -272,9 +285,7 @@ tbody tr.clickable:hover td {
 												<spring:eval expression="item.${column}" htmlEscape="false" />
 											</c:set>
 										</c:otherwise>
-									</c:choose> 
-								
-									<c:if test="${printText}">
+									</c:choose> <c:if test="${printText}">
 
 										<c:if test="${columnMaxLength ge 0}">
 											<c:if test="${fn:length(colTxt) gt columnMaxLength}">
@@ -282,7 +293,7 @@ tbody tr.clickable:hover td {
 												<spring:eval expression="shortenedTxt" var="colTxt" htmlEscape="false" />
 											</c:if>
 										</c:if>
-										
+
 										<c:if test="${columnEscapeValue}">
 											<c:set var="value" value="${colTxt}" />
 											<c:if test="${not empty value}">
@@ -306,20 +317,16 @@ tbody tr.clickable:hover td {
 
 							<!-- Added print -->
 							<c:if test="${print}">
-								<td class="utilbox">
-									<spring:url value="${path}/print/${itemId}" var="print_url">
+								<td class="utilbox"><spring:url value="${path}/print/${itemId}" var="print_url">
 										<spring:param name="form" />
-									</spring:url> 
-									<spring:url value="/resources/images/print.png" var="print_image_url" /> 
-									<c:if test="${empty printLabel}">
+									</spring:url> <spring:url value="/resources/images/print.png" var="print_image_url" /> <c:if test="${empty printLabel}">
 										<c:if test="${not empty entityName}">
 											<spring:message code="label_print_${entityName}" var="printLabel" htmlEscape="false" />
-										</c:if> 
+										</c:if>
 										<c:if test="${empty printLabel}">
 											<spring:message arguments="${typeName}" code="entity_print" var="printLabel" htmlEscape="false" />
 										</c:if>
-									</c:if> 
-									<a href="${print_url}" id="print_${itemId}" alt="${fn:escapeXml(printLabel)}" title="${fn:escapeXml(printLabel)}" target="${printToTarget}"> <img alt="${fn:escapeXml(printLabel)}" class="image" src="${print_image_url}" title="${fn:escapeXml(printLabel)}" /></a> <c:if
+									</c:if> <a href="${print_url}" id="print_${itemId}" alt="${fn:escapeXml(printLabel)}" title="${fn:escapeXml(printLabel)}" target="${printToTarget}"> <img alt="${fn:escapeXml(printLabel)}" class="image" src="${print_image_url}" title="${fn:escapeXml(printLabel)}" /></a> <c:if
 										test="${not empty printConfirmationPath}">
 										<spring:message code="yes_print" var="yes_print" htmlEscape="false" />
 										<spring:message code="no_cancel" var="no_cancel" htmlEscape="false" />
@@ -384,22 +391,21 @@ tbody tr.clickable:hover td {
 										<spring:eval expression="item.${emailFieldName}" />
 									</c:set>
 								</c:if>
-								<td class="utilbox">
-									<c:if test="${empty emailFieldName or not empty emailAddress}">
+								<td class="utilbox"><c:if test="${empty emailFieldName or not empty emailAddress}">
 										<spring:url value="${path}/email/${itemId}" var="email_form_url">
 											<spring:param name="form" />
 										</spring:url>
 										<spring:url value="/resources/images/email.png" var="email_image_url" />
-										
+
 										<c:if test="${empty emailLabel}">
 											<c:if test="${not empty entityName}">
 												<spring:message code="label_email_${entityName}" var="emailLabel" htmlEscape="false" />
-											</c:if> 
+											</c:if>
 											<c:if test="${empty emailLabel}">
 												<spring:message arguments="${typeName}" code="entity_email" var="emailLabel" htmlEscape="false" />
 											</c:if>
-										</c:if> 
-										
+										</c:if>
+
 										<a href="${email_form_url}" id="email_${itemId}" alt="${fn:escapeXml(emailLabel)}" title="${fn:escapeXml(emailLabel)}"> <img alt="${fn:escapeXml(emailLabel)}" class="image" src="${email_image_url}" title="${fn:escapeXml(emailLabel)}" /></a>
 										<c:if test="${not empty emailConfirmationPath}">
 											<spring:message code="yes_email" var="yes_email" htmlEscape="false" javaScriptEscape="true" />

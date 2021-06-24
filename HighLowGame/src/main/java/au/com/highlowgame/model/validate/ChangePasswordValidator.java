@@ -29,10 +29,10 @@ public class ChangePasswordValidator extends AbstractCompositeValidator {
 			ChangePassword changePassword = (ChangePassword) obj;
 
 			if (securityService.passwordMatch(changePassword.getPassword(), UserContextService.getCurrentPlayer().getPassword()) == false)
-				e.rejectValue("password", "message_com_ss_speedsolutions_password_invalidcurrentpassword");
+				e.rejectValue("password", "message_com_ss_highlowgame_password_invalidcurrentpassword");
 			if (changePassword.getNewPassword().equals(changePassword.getNewPasswordConfirmation()) == false) {
-				e.rejectValue("newPassword", "message_com_ss_speedsolutions_password_passwordconfirmationmatching");
-				e.rejectValue("newPasswordConfirmation", "message_com_ss_speedsolutions_password_passwordconfirmationmatching");
+				e.rejectValue("newPassword", "message_com_ss_highlowgame_password_passwordconfirmationmatching");
+				e.rejectValue("newPasswordConfirmation", "message_com_ss_highlowgame_password_passwordconfirmationmatching");
 			}
 
 		}
@@ -41,8 +41,8 @@ public class ChangePasswordValidator extends AbstractCompositeValidator {
 			ResetPassword resetPasswordBean = (ResetPassword) obj;
 
 			if (resetPasswordBean.getNewPassword().equals(resetPasswordBean.getNewPasswordConfirmation()) == false) {
-				e.rejectValue("newPassword", "message_com_ss_speedsolutions_password_passwordconfirmationmatching");
-				e.rejectValue("newPasswordConfirmation", "message_com_ss_speedsolutions_password_passwordconfirmationmatching");
+				e.rejectValue("newPassword", "message_com_ss_highlowgame_password_passwordconfirmationmatching");
+				e.rejectValue("newPasswordConfirmation", "message_com_ss_highlowgame_password_passwordconfirmationmatching");
 			}
 
 		}
