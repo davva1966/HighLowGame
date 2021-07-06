@@ -16,10 +16,6 @@
 		<put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
 	</definition>
 
-	<definition name="setup" template="/WEB-INF/layouts/setup.jspx">
-		<put-attribute name="small_header" value="/WEB-INF/views/smallHeader.jspx" />
-	</definition>
-	
 	<definition name="fragment" template="/WEB-INF/layouts/fragment.jspx" />
 
 </tiles-definitions>

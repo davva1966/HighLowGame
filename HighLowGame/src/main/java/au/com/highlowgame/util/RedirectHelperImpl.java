@@ -31,6 +31,23 @@ public class RedirectHelperImpl implements RedirectHelper {
 
 	}
 
+	@Override
+	public String redirectToEntityList(String path, Integer page, Integer size, HttpServletRequest request) {
+		if (page == null)
+			page = 1;
+		if (size == null)
+			size = AppUtil.getTablePageSize(request);
+
+		try {
+			SSURIBuilder builder = new SSURIBuilder(path);
+			builder.addParameter("page", page.toString());
+			builder.addParameter("size", size.toString());
+			return "redirect:" + builder.build();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 
 	@Override
 	public String redirectToEntityEditView(String path, String entityId) {

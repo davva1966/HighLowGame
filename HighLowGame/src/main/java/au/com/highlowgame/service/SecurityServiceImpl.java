@@ -60,7 +60,7 @@ public class SecurityServiceImpl implements SecurityService {
 		String newPassword = PasswordGenerator.getPassword(4);
 		player.setPassword(encodePassword(newPassword));
 		player.merge();
-		String subject = translationService.translate("player_forgot_password_subject", "SpeedSolutions Backoffice");
+		String subject = translationService.translate("player_forgot_password_subject");
 		String body = translationService.translate("player_forgot_password_body", newPassword);
 
 		try {

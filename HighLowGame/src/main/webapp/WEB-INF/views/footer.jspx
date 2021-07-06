@@ -35,10 +35,4 @@
 		<util:language label="Svenska" locale="sv" />
 	</span>
 
-	<spring:url value="/resources/images/speedsolutions-logo.png" var="logo" />
-	<spring:message code="global_sponsored" htmlEscape="false" var="sponsored" />
-	<span> <a href="http://www.speedsolutions.com.au" target="_blank" title="${fn:escapeXml(sponsored)}"> <img align="right" alt="${fn:escapeXml(sponsored)}" src="${logo}" />
-	</a>
-	</span>
-
 </div>

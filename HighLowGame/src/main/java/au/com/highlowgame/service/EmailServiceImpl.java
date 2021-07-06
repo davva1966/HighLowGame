@@ -53,8 +53,8 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public void sendGameInvitation(Game game, GameParticipant participant) throws Exception {
 
-		String joinLink = game.getJoinLinkFor(participant);
-		String declineLink = game.getDeclineLinkFor(participant);
+		String joinLink = game.getJoinLink();
+		String declineLink = game.getDeclineLink(participant);
 
 		final String finalSubject = translationService.translate("game_invitation_email_subject");
 		final String finalText = translationService.translate("game_invitation_email_text", joinLink, declineLink);

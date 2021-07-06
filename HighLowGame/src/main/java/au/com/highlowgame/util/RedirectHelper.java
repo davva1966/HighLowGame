@@ -10,6 +10,8 @@ public interface RedirectHelper {
 	public String redirectToReferer(HttpServletRequest request);
 
 	public String redirectWithNotFoundMessage(HttpServletRequest request);
+	
+	public String redirectToEntityList(String path, Integer page, Integer size, HttpServletRequest request);
 
 	public String redirectToEntityEditView(String path, String entityId);
 

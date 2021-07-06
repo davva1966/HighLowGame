@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" xmlns:springform="http://www.springframework.org/tags/form"
+	version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<spring:message code="button_post_question" htmlEscape="false" var="buttonLabel" />
+	<spring:message code="label_post_question" var="label" htmlEscape="false" />
+	<form:create id="fc_com_ss_highlowgame_model_question" buttonLabel="${buttonLabel}" label="${label}" modelAttribute="question" path="/games/postquestion2">
+		<springform:hidden path="game" />
+		<springform:hidden path="owner" />
+		<springform:hidden path="number" />
+
+		<field:textarea field="question" id="c_com_ss_highlowgame_model_question_question" labelOver="true" required="true" />
+		<field:input decimalMax="999999999999999999999.9999" decimalMin="-999999999999999999999.9999" field="correctAnswer" id="c_com_ss_highlowgame_model_question_correctanswer" required="true" />
+		<field:input field="unit" id="c_com_ss_highlowgame_model_question_unit" labelCode="label_question_unit" />
+
+	</form:create>
+
+</div>

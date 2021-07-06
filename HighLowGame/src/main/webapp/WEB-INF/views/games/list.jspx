@@ -6,7 +6,9 @@
 	<c:set value="${fn:escapeXml(param.page)}" var="page" />
 	<c:set value="${fn:escapeXml(param.size)}" var="size" />
 
-	<page:list id="pl_com_ss_highlowgame_model_game" items="${games}">
+	<table:message message="${infoMessage}" />
+	
+	<page:list id="pl_com_ss_highlowgame_model_game" items="${games}" emptyLabelCode="label_no_games_found">
 		<table:table data="${games}" id="l_com_ss_highlowgame_model_game" path="/games" allowUpdateFieldName="allowUpdate" allowDeleteFieldName="allowDelete" permissionName="USER">
 			<table:column id="c_com_ss_highlowgame_model_game_description" property="description" />
 			<table:column id="c_com_ss_highlowgame_model_game_owner" property="owner.name" />

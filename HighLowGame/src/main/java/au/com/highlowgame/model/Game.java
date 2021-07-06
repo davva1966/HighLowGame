@@ -1,10 +1,9 @@
 package au.com.highlowgame.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import au.com.highlowgame.service.EmailService;
 import au.com.highlowgame.service.TranslationService;
 import au.com.highlowgame.user.UserContextService;
+import au.com.highlowgame.util.Application;
 
 @Configurable
 @Entity
@@ -41,6 +41,9 @@ public class Game extends DomainEntity {
 
 	@Autowired
 	transient EmailService emailService;
+
+	@ManyToOne
+	private GameTracker gameTracker;
 
 	@NotNull
 	@ManyToOne
@@ -80,10 +83,18 @@ public class Game extends DomainEntity {
 	private GameStatus gameStatus;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
-	private Set<GameParticipant> participants = new HashSet<GameParticipant>();
+	private List<GameParticipant> participants = new ArrayList<GameParticipant>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
-	private Set<Question> questions = new HashSet<Question>();
+	private List<Question> questions = new ArrayList<Question>();
+
+	public GameTracker getGameTracker() {
+		return gameTracker;
+	}
+
+	public void setGameTracker(GameTracker gameTracker) {
+		this.gameTracker = gameTracker;
+	}
 
 	public Player getOwner() {
 		return owner;
@@ -169,34 +180,36 @@ public class Game extends DomainEntity {
 		this.gameStatus = gameStatus;
 	}
 
-	public Set<GameParticipant> getParticipants() {
+	public List<GameParticipant> getParticipants() {
 		if (participants == null || participants.isEmpty())
 			participants = GameParticipant.getForGameByName(this);
 		return participants;
 	}
 
-	public void setParticipants(Set<GameParticipant> participants) {
+	public void setParticipants(List<GameParticipant> participants) {
 		this.participants = participants;
 	}
 
-	public Set<Question> getQuestions() {
+	public List<Question> getQuestions() {
 		if (questions == null || questions.isEmpty())
 			questions = Question.getForGame(this);
 		return questions;
 	}
 
-	public void setQuestions(Set<Question> questions) {
+	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
 	}
 
-	public Set<GameParticipant> getParticipantsByPoints() {
-		if (participants == null || participants.isEmpty())
-			participants = GameParticipant.getForGameByPoints(this);
-		return participants;
+	public List<GameParticipant> getParticipantsByPoints() {
+		return GameParticipant.getForGameByPoints(this);
+	}
+
+	public List<GameParticipant> getParticipantsByName() {
+		return GameParticipant.getForGameByName(this);
 	}
 
 	public List<Player> getPlayers() {
-		Set<GameParticipant> participants = getParticipants();
+		List<GameParticipant> participants = getParticipants();
 		if (participants == null || participants.size() == 0)
 			return null;
 
@@ -281,7 +294,7 @@ public class Game extends DomainEntity {
 			}
 			break;
 		case ACTIVE:
-			if (hasParticipant(currentPlayer)) {
+			if (hasParticipant(currentPlayer) || currentPlayer.equals(getGameLeader())) {
 				action1 = "games/joingame/" + getId();
 				actionName1 = "game_action_join";
 			}
@@ -391,6 +404,18 @@ public class Game extends DomainEntity {
 
 	}
 
+	public boolean allPlayersJoined() {
+		boolean allJoined = true;
+		for (GameParticipant participant : getParticipants()) {
+			if (participant.getNumber() == 0) {
+				allJoined = false;
+				break;
+			}
+		}
+
+		return allJoined;
+	}
+
 	@PrePersist
 	protected void prePersist() {
 		if (getOwner() == null)
@@ -413,6 +438,20 @@ public class Game extends DomainEntity {
 		return merged;
 	}
 
+	@Transactional
+	public void remove() {
+		if (getGameTracker() != null)
+			getGameTracker().remove();
+		super.remove();
+	}
+
+	public void removeParticipant(GameParticipant participant) {
+		if (getParticipants() != null)
+			getParticipants().remove(participant);
+
+		participant.remove();
+	}
+
 	public void removeAllParticiants() {
 
 		if (getParticipants() == null)
@@ -424,17 +463,29 @@ public class Game extends DomainEntity {
 		setParticipants(null);
 	}
 
-	public void start() {
+	public void start() throws Exception {
+
+		GameTracker tracker = new GameTracker(this);
+		
+		tracker.persist();
+		setGameTracker(tracker);
+
 		setStarted(new Date());
 		setGameStatus(GameStatus.ACTIVE);
 		merge();
+		String error = invitePlayers();
+
+		if (error != null)
+			throw new Exception(error);
 	}
 
 	public synchronized void playerJoined(Player player) {
 		GameParticipant participant = findParticipantForPlayer(player);
 		if (participant != null) {
-			participant.setNumber(GameParticipant.getNextNumberForGame(this));
-			participant.merge();
+			if (participant.getNumber() == 0) {
+				participant.setNumber(GameParticipant.getNextNumberForGame(this));
+				participant.merge();
+			}
 		}
 	}
 
@@ -444,27 +495,44 @@ public class Game extends DomainEntity {
 		merge();
 	}
 
-	public void invitePlayers() throws Exception {
+	public String invitePlayers() {
 
 		if (getParticipants() == null)
-			return;
+			return null;
+
+		boolean error = false;
+		StringBuffer errorMsg = new StringBuffer();
 
 		for (GameParticipant participant : getParticipants()) {
-			emailService.sendGameInvitation(this, participant);
+			if (UserContextService.getCurrentPlayer().equals(participant.getPlayer()) == false) {
+				try {
+					emailService.sendGameInvitation(this, participant);
+				} catch (Exception e) {
+					error = true;
+					if (errorMsg.length() > 0)
+						errorMsg.append(", ");
+					errorMsg.append(e.getMessage());
+				}
+			}
 		}
+
+		if (error)
+			return translationService.translate("message_com_ss_highlowgame_errorwheninvitingplayers", errorMsg.toString());
+
+		return null;
 
 	}
 
-	public String getJoinLinkFor(GameParticipant participant) throws Exception {
-		String link = "http://localhost:6088/HighLowGame/";
-		link = link + "games/joingame/?game=" + getId() + "&participant=" + participant.getId();
+	public String getJoinLink() throws Exception {
+		String link = Application.getBaseURL();
+		link = link + "games/joingame/" + getId();
 
 		return link;
 	}
 
-	public String getDeclineLinkFor(GameParticipant participant) throws Exception {
-		String link = "http://localhost:6088/HighLowGame/";
-		link = link + "games/declinegame/?game=" + getId() + "&participant=" + participant.getId();
+	public String getDeclineLink(GameParticipant participant) throws Exception {
+		String link = Application.getBaseURL();
+		link = link + "games/declinegame/" + getId() + "?participant=" + participant.getId();
 
 		return link;
 	}
@@ -485,6 +553,57 @@ public class Game extends DomainEntity {
 		}
 
 		return null;
+	}
+
+	public GameParticipant findFirstParticipant() {
+		EntityManager em = DomainEntity.entityManager();
+		TypedQuery<GameParticipant> q = em.createQuery("SELECT o FROM GameParticipant o WHERE o.game = :game and o.number = 1", GameParticipant.class);
+		q.setParameter("game", this);
+
+		try {
+			return q.getSingleResult();
+		} catch (Exception e) {
+		}
+
+		return null;
+	}
+
+	public List<String> findAllParticipantIds() {
+		EntityManager em = DomainEntity.entityManager();
+		TypedQuery<String> q = em.createQuery("SELECT o.id FROM GameParticipant o WHERE o.game = :game", String.class);
+		q.setParameter("game", this);
+		return q.getResultList();
+	}
+
+	public List<String> findJoinedParticipantIds() {
+		EntityManager em = DomainEntity.entityManager();
+		TypedQuery<String> q = em.createQuery("SELECT o.id FROM GameParticipant o WHERE o.game = :game and o.number > 0", String.class);
+		q.setParameter("game", this);
+		return q.getResultList();
+	}
+
+	public List<String> findJoinedParticipantIdsExcept(String... alreadyJoined) {
+		EntityManager em = DomainEntity.entityManager();
+		TypedQuery<String> q = em.createQuery("SELECT o.id FROM GameParticipant o WHERE o.game = :game and o.number > 0 and o.id not in :alreadyJoined", String.class);
+		q.setParameter("game", this);
+		q.setParameter("alreadyJoined", Arrays.asList(alreadyJoined));
+		return q.getResultList();
+	}
+
+	public List<String> findAnsweredParticipantIds(Question question) {
+		EntityManager em = DomainEntity.entityManager();
+		TypedQuery<String> q = em.createQuery("SELECT o.gameParticipant.id FROM GameParticipantAnswer o WHERE o.question = :question", String.class);
+		q.setParameter("question", question);
+		return q.getResultList();
+	}
+
+	public List<String> findAnsweredParticipantIdsExcept(Question question, String... alreadyAnswered) {
+		EntityManager em = DomainEntity.entityManager();
+		TypedQuery<String> q = em.createQuery("SELECT o.gameParticipant.id FROM GameParticipantAnswer o WHERE o.game = :game and o.question = :question and o.gameParticipant.id not in :alreadyAnswered", String.class);
+		q.setParameter("game", this);
+		q.setParameter("question", question);
+		q.setParameter("alreadyAnswered", Arrays.asList(alreadyAnswered));
+		return q.getResultList();
 	}
 
 	public static Game find(String id) {

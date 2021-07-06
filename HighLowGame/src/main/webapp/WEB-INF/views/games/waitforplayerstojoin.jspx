@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	
+	<c:set value="${allParticipantIds}" var="allParticipantIds" />
+	<c:set value="${joinedParticipantIds}" var="joinedParticipantIds" />
+	
+	<field:message message="${infoMessage}" />
+	<page:show id="ps_com_ss_highlowgame_model_game" object="${game}" path="/games" create="false" update="false" delete="false" permissionName="USER">
+		<field:display field="description" id="s_com_ss_highlowgame_model_game_description" object="${game}" />
+	</page:show>
+	<br />
+	<page:list id="pl_com_ss_highlowgame_model_players" items="${game.participantsByName}" labelCode="label_game_waitingforplayerstojoin" emptyLabelCode="label_no_players_found">
+		<field:table entityName="game_participant" data="${game.participantsByName}" id="l_com_ss_highlowgame_model_gameparticipant" path="/gameparticipants" create="false" delete="false" update="false" show="false">
+			<field:column id="c_com_ss_highlowgame_model_player_avatar" thumbnail="true" label= " " property="avatarThumbnailUrl" />
+			<field:column id="c_com_ss_highlowgame_model_player_name" property="name" />
+			<field:column id="c_com_ss_highlowgame_model_participant_joined" label=" " property="joinedOrWaiting" escapeValue="false"/>
+		</field:table>
+	</page:list>
+	<br />
+	
+	<script type="text/javascript">
+		function fetchdata(){
+			 $.ajax({
+					async : false,
+					type : 'POST',
+					url : rootFolder + 'games/refreshwaitingforplayers',
+					data : jQuery.param({ gameId: '${game.id}', joinedParticipantIds : '${joinedParticipantIds}' , allParticipantIds : '${allParticipantIds}'}),
+					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+					dataType : 'json',
+			  success: function(data){
+				  if (data == true)
+					window.location.reload(true); 
+			   //alert(data);
+			  },
+			  complete:function(data){
+			   setTimeout(fetchdata,5000);
+			  }
+			 });
+			}
+	
+			$(document).ready(function(){
+			 setTimeout(fetchdata,5000);
+			});
+	</script>
+	
+</div>

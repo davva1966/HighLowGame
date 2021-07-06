@@ -5,6 +5,7 @@
 	
 	<spring:message code="button_next" htmlEscape="false" var="buttonLabel" />
 	<form:update id="fu_com_ss_highlowgame_model_game" buttonLabel="${buttonLabel}" modelAttribute="game" path="/games/update1" versionField="none" >
+		<springform:hidden path="gameTracker" />
 		<springform:hidden path="owner" />
 		<springform:hidden path="created" />
 		<springform:hidden path="gameStatus" />

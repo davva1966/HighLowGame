@@ -1,18 +1,23 @@
 package au.com.highlowgame.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.TypedQuery;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
+
+import au.com.highlowgame.user.UserContextService;
 
 @Configurable
 @Entity
@@ -28,8 +33,12 @@ public class GameParticipantAnswer extends DomainEntity {
 	@OneToOne
 	private Question question;
 
-	@Size(max = 300)
-	private String answer;
+	@DecimalMin("-999999999999999999999.9999")
+	@DecimalMax("999999999999999999999.9999")
+	private BigDecimal answer;
+
+	@Enumerated(EnumType.STRING)
+	private Answer highLowAnswer;
 
 	private Boolean correct;
 
@@ -55,12 +64,20 @@ public class GameParticipantAnswer extends DomainEntity {
 		this.question = question;
 	}
 
-	public String getAnswer() {
+	public BigDecimal getAnswer() {
 		return answer;
 	}
 
-	public void setAnswer(String answer) {
+	public void setAnswer(BigDecimal answer) {
 		this.answer = answer;
+	}
+
+	public Answer getHighLowAnswer() {
+		return highLowAnswer;
+	}
+
+	public void setHighLowAnswer(Answer highLowAnswer) {
+		this.highLowAnswer = highLowAnswer;
 	}
 
 	public Boolean getCorrect() {
@@ -95,6 +112,16 @@ public class GameParticipantAnswer extends DomainEntity {
 		this.pointsAfter = pointsAfter;
 	}
 
+	public boolean isCurrentPlayerPostingQuestion() {
+		Player currentPlayer = UserContextService.getCurrentPlayer();
+		return getQuestion().getGame().getGameTracker().getParticipantPostingCurrentQuestion().getPlayer().equals(currentPlayer);
+	}
+
+	public boolean isCurrentPlayerAnsweringFirst() {
+		Player currentPlayer = UserContextService.getCurrentPlayer();
+		return getQuestion().getGame().getGameTracker().getParticipantToAnswerFirst().getPlayer().equals(currentPlayer);
+	}
+
 	@Transactional
 	public GameParticipantAnswer merge() {
 		if (this.entityManager == null)
@@ -109,11 +136,11 @@ public class GameParticipantAnswer extends DomainEntity {
 		return entityManager().find(GameParticipantAnswer.class, id);
 	}
 
-	public static Set<GameParticipantAnswer> getForGameParticipant(GameParticipant gameParticipant) {
+	public static List<GameParticipantAnswer> getForGameParticipant(GameParticipant gameParticipant) {
 		EntityManager em = DomainEntity.entityManager();
 		TypedQuery<GameParticipantAnswer> q = em.createQuery("SELECT o FROM GameParticipantAnswer AS o WHERE o.gameParticipant = :gameParticipant", GameParticipantAnswer.class);
 		q.setParameter("gameParticipant", gameParticipant);
-		return new HashSet<GameParticipantAnswer>(q.getResultList());
+		return q.getResultList();
 	}
 
 }

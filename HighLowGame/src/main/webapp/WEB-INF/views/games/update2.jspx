@@ -4,6 +4,7 @@
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 	<form:update id="fc_com_ss_highlowgame_model_game" modelAttribute="game" path="/games/update2" versionField="none"> 
+		<springform:hidden path="gameTracker" />
 		<springform:hidden path="owner" />
 		<springform:hidden path="description" />
 		<springform:hidden path="startingPoints" />

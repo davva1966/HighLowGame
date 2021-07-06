@@ -1,7 +1,7 @@
 package au.com.highlowgame.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
+
+import au.com.highlowgame.util.Application;
 
 @Entity
 @Configurable
@@ -34,7 +36,7 @@ public class GameParticipant extends DomainEntity {
 	private int points;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "gameParticipant")
-	private Set<GameParticipantAnswer> answers = new HashSet<GameParticipantAnswer>();
+	private List<GameParticipantAnswer> answers = new ArrayList<GameParticipantAnswer>();
 
 	public Game getGame() {
 		return game;
@@ -68,13 +70,13 @@ public class GameParticipant extends DomainEntity {
 		this.points = points;
 	}
 
-	public Set<GameParticipantAnswer> getAnswers() {
+	public List<GameParticipantAnswer> getAnswers() {
 		if (answers == null || answers.isEmpty())
 			answers = GameParticipantAnswer.getForGameParticipant(this);
 		return answers;
 	}
 
-	public void setAnswers(Set<GameParticipantAnswer> answers) {
+	public void setAnswers(List<GameParticipantAnswer> answers) {
 		this.answers = answers;
 	}
 
@@ -84,6 +86,20 @@ public class GameParticipant extends DomainEntity {
 
 	public String getAvatarThumbnailUrl() {
 		return getPlayer().getAvatarThumbnailUrl();
+	}
+
+	public String getJoinedOrWaiting() {
+		if (getNumber() == 0)
+			return "<img src=\"" + Application.getRelativeURL() + "resources/images/waiting.gif\">";
+		else
+			return "<img src=\"" + Application.getRelativeURL() + "resources/images/checkmark.png\">";
+	}
+
+	public String getAnsweredOrWaiting() {
+		if (GameParticipantAnswer.getForGameParticipant(this) == null)
+			return "<img src=\"" + Application.getRelativeURL() + "resources/images/waiting.gif\">";
+		else
+			return "<img src=\"" + Application.getRelativeURL() + "resources/images/checkmark.png\">";
 	}
 
 	@Transactional
@@ -100,18 +116,30 @@ public class GameParticipant extends DomainEntity {
 		return entityManager().find(GameParticipant.class, id);
 	}
 
-	public static Set<GameParticipant> getForGameByName(Game game) {
+	public static List<GameParticipant> getForGameByName(Game game) {
 		EntityManager em = DomainEntity.entityManager();
 		TypedQuery<GameParticipant> q = em.createQuery("SELECT o FROM GameParticipant AS o WHERE o.game = :game order by o.player.name", GameParticipant.class);
 		q.setParameter("game", game);
-		return new HashSet<GameParticipant>(q.getResultList());
+		return q.getResultList();
 	}
 
-	public static Set<GameParticipant> getForGameByPoints(Game game) {
+	public static GameParticipant findForGameAndPlayer(Game game, Player player) {
+		EntityManager em = DomainEntity.entityManager();
+		TypedQuery<GameParticipant> q = em.createQuery("SELECT o FROM GameParticipant AS o WHERE o.game = :game and o.player = :player", GameParticipant.class);
+		q.setParameter("game", game);
+		q.setParameter("player", player);
+		try {
+			return q.getSingleResult();
+		} catch (Exception e) {
+		}
+		return null;
+	}
+
+	public static List<GameParticipant> getForGameByPoints(Game game) {
 		EntityManager em = DomainEntity.entityManager();
 		TypedQuery<GameParticipant> q = em.createQuery("SELECT o FROM GameParticipant AS o WHERE o.game = :game order by o.points desc", GameParticipant.class);
 		q.setParameter("game", game);
-		return new HashSet<GameParticipant>(q.getResultList());
+		return q.getResultList();
 	}
 
 	public static int getNextNumberForGame(Game game) {

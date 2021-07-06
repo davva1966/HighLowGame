@@ -19,7 +19,22 @@
 	<definition extends="default" name="games/update2">
 		<put-attribute name="body" value="/WEB-INF/views/games/update2.jspx" />
 	</definition>
-	<definition extends="default" name="games/waitforplayers">
-		<put-attribute name="body" value="/WEB-INF/views/games/waitforplayers.jspx" />
+	<definition extends="default" name="games/waitforplayerstojoin">
+		<put-attribute name="body" value="/WEB-INF/views/games/waitforplayerstojoin.jspx" />
+	</definition>
+	<definition extends="default" name="games/waitforplayeraction">
+		<put-attribute name="body" value="/WEB-INF/views/games/waitforplayeraction.jspx" />
+	</definition>
+	<definition extends="default" name="games/waitforplayerstoanswer">
+		<put-attribute name="body" value="/WEB-INF/views/games/waitforplayerstoanswer.jspx" />
+	</definition>
+	<definition extends="public" name="games/declined">
+		<put-attribute name="body" value="/WEB-INF/views/games/declined.jspx" />
+	</definition>
+	<definition extends="default" name="games/postquestion">
+		<put-attribute name="body" value="/WEB-INF/views/games/postquestion.jspx" />
+	</definition>
+	<definition extends="default" name="games/answerquestion">
+		<put-attribute name="body" value="/WEB-INF/views/games/answerquestion.jspx" />
 	</definition>
 </tiles-definitions>

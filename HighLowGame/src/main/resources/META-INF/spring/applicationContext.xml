@@ -71,7 +71,7 @@
 
 	<bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
 
-	<bean id="emailService" class="au.com.highlowgame.service.EmailServiceImpl"/>
+	<bean id="emailService" class="au.com.highlowgame.service.EmailServiceImpl" />
 
 	<bean id="mailSender" class="au.com.highlowgame.service.GmailMailSender">
 		<property name="username" value="${gmail.username}" />
@@ -79,7 +79,11 @@
 		<property name="defaultEmailSender" value="${gmail.defaultEmailSender}" />
 	</bean>
 
-	<bean id="systemInitializer" class="au.com.highlowgame.util.SystemInitializer" />
+	<bean id="systemInitializer" class="au.com.highlowgame.util.SystemInitializer">
+		<property name="backendServer" value="${backend_host}" />
+		<property name="backendPort" value="${backend_port}" />
+		<property name="backendDomain" value="${backend_domain}" />
+	</bean>
 
 	<bean id="beanProvider" class="au.com.highlowgame.util.SpringBeanProvider" />
 	<bean id="redirectHelper" class="au.com.highlowgame.util.RedirectHelperImpl" />

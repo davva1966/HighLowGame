@@ -2,9 +2,13 @@ package au.com.highlowgame.util;
 
 import java.util.Locale;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.util.WebUtils;
 
 import au.com.highlowgame.model.DomainEntity;
 import au.com.highlowgame.model.validate.AbstractCompositeValidator;
@@ -12,7 +16,7 @@ import au.com.highlowgame.service.DatabaseService;
 import au.com.highlowgame.service.TranslationService;
 
 public class AppUtil {
-	
+
 	public static String translate(String code) {
 		return translate(code, null, (Object) null);
 	}
@@ -91,6 +95,21 @@ public class AppUtil {
 		}
 
 		return forceSSL;
+	}
+
+	public static Integer getTablePageSize(HttpServletRequest request) {
+		Integer size = 30;
+		Cookie cookie = WebUtils.getCookie(request, SSPageSizeFilter.PAGE_SIZE_COOKIE);
+		if (cookie != null && cookie.getValue().trim().length() > 0) {
+			String sizeStr = cookie.getValue();
+			try {
+				size = Integer.parseInt(sizeStr);
+			} catch (Exception e) {
+			}
+		}
+
+		return size;
+
 	}
 
 }

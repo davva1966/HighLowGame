@@ -30,41 +30,22 @@ CREATE TABLE `player` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-DROP TABLE IF EXISTS `game`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `game` (
-  `id` char(36) NOT NULL,
-  `owner` char(36) NOT NULL,
-  `description` varchar(2000) DEFAULT NULL,
-  `starting_points` int(11) NOT NULL,
-  `game_type` varchar(255) NOT NULL,
-  `game_leader` char(36),
-  `questions_per_player` int(11),
-  `created` datetime DEFAULT NULL,
-  `started` datetime DEFAULT NULL,
-  `finished` datetime DEFAULT NULL,
-  `game_status` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_owner_1` (`owner`),
-  KEY `fk_game_leader_1` (`game_leader`),
-  CONSTRAINT `fk_owner_1` FOREIGN KEY (`owner`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_game_leader_1` FOREIGN KEY (`game_leader`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
 DROP TABLE IF EXISTS `question`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `question` (
   `id` char(36) NOT NULL,
   `game` char(36) NOT NULL,
+  `owner` char(36) DEFAULT NULL,
   `number` int(11) NOT NULL,
   `question` varchar(2048),
-  `correct_answer` varchar(300) NOT NULL,
+  `correct_answer` decimal(25,4) NOT NULL,
+  `unit` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_game_1` (`game`),
-  CONSTRAINT `fk_game_1` FOREIGN KEY (`game`) REFERENCES `game` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_owner_2` (`owner`),
+  CONSTRAINT `fk_game_1` FOREIGN KEY (`game`) REFERENCES `game` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_owner_2` FOREIGN KEY (`owner`) REFERENCES `game_participant` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -92,7 +73,8 @@ CREATE TABLE `game_participant_answer` (
   `id` char(36) NOT NULL,
   `game_participant` char(36) NOT NULL,
   `question` char(36) NOT NULL,
-  `answer` varchar(300),
+  `answer` decimal(25,4) DEFAULT NULL,
+  `high_low_answer` varchar(255) NOT NULL,
   `correct` tinyint(1),
   `points_before` int(11),
   `points_bet` int(11),
@@ -102,6 +84,53 @@ CREATE TABLE `game_participant_answer` (
   KEY `fk_question_3` (`question`),
   CONSTRAINT `fk_game_participant_3` FOREIGN KEY (`game_participant`) REFERENCES `game_participant` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_question_3` FOREIGN KEY (`question`) REFERENCES `question` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `game_tracker`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `game_tracker` (
+  `id` char(36) NOT NULL,
+  `game` char(36) NOT NULL,
+  `current_question` char(36) DEFAULT NULL,
+  `participant_posting_current_question` char(36) DEFAULT NULL,
+  `participant_to_answer_first` char(36) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_game_3` (`game`),
+  KEY `fk_question_2` (`current_question`),
+  KEY `fk_participant_3` (`participant_posting_current_question`),
+  KEY `fk_participant_4` (`participant_to_answer_first`),
+  CONSTRAINT `fk_game_3` FOREIGN KEY (`game`) REFERENCES `game` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_question_2` FOREIGN KEY (`current_question`) REFERENCES `question` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_participant_3` FOREIGN KEY (`participant_posting_current_question`) REFERENCES `game_participant` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_participant_4` FOREIGN KEY (`participant_to_answer_first`) REFERENCES `game_participant` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `game`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `game` (
+  `id` char(36) NOT NULL,
+  `game_tracker` char(36) DEFAULT NULL,
+  `owner` char(36) NOT NULL,
+  `description` varchar(2000) DEFAULT NULL,
+  `starting_points` int(11) NOT NULL,
+  `game_type` varchar(255) NOT NULL,
+  `game_leader` char(36),
+  `questions_per_player` int(11),
+  `created` datetime DEFAULT NULL,
+  `started` datetime DEFAULT NULL,
+  `finished` datetime DEFAULT NULL,
+  `game_status` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_game_tracker_1` (`game_tracker`),
+  KEY `fk_owner_1` (`owner`),
+  KEY `fk_game_leader_1` (`game_leader`),
+  CONSTRAINT `fk_game_tracker_1` FOREIGN KEY (`game_tracker`) REFERENCES `game_tracker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_owner_1` FOREIGN KEY (`owner`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_game_leader_1` FOREIGN KEY (`game_leader`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
