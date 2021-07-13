@@ -15,6 +15,7 @@ public class SpeedSolutionsCodeException extends SpeedSolutionsException {
 	public SpeedSolutionsCodeException(String messageCode, Object... arguments) {
 		super(messageCode);
 		this.arguments = arguments;
+		
 	}
 
 	public String getMessageCode() {
