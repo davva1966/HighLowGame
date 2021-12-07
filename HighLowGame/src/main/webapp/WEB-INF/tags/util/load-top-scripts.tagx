@@ -5,8 +5,6 @@
 	<spring:url value="/resources/dojo/dojo.js" var="dojo_url" />
 	<spring:url value="/resources/spring/Spring.js" var="spring_url" />
 	<spring:url value="/resources/spring/Spring-Dojo.js" var="spring_dojo_url" />
-	<spring:url value="/resources/images/favicon.ico" var="favicon" />
-	<link rel="SHORTCUT ICON" href="${favicon}" />
 
 	<!-- Get the player locale and language from the page context (it was set by Spring MVC's locale resolver) -->
 	<c:set var="playerLocale">
